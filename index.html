@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mathe-Trainer: 1. Schulaufgabe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F8FBFF; --grid:#DCE7F5; --line:#C9D8EE; --ink:#1D4E9A; --teal:#1F7F8C; --text:#1B2540; --muted:#5B6787;
+  --marker:#FFD84D; --ok:#1E9E5A; --okbg:#E3F6EB; --bad:#D9472F; --badbg:#FCE7E3;
+  --card:#FFFFFF; --edge:#BFD0EA; --red:#E4572E;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#101828; --grid:#1A2539; --line:#2A3A58; --ink:#9DB6FF; --teal:#5CC6D3; --text:#E6ECFA; --muted:#98A3BF;
+    --marker:#E8C53A; --ok:#4CCB86; --okbg:#143524; --bad:#FF7A63; --badbg:#3A1A15;
+    --card:#172238; --edge:#2B3B5C; --red:#FF8A66; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#101828; --grid:#1A2539; --line:#2A3A58; --ink:#9DB6FF; --teal:#5CC6D3; --text:#E6ECFA; --muted:#98A3BF;
+  --marker:#E8C53A; --ok:#4CCB86; --okbg:#143524; --bad:#FF7A63; --badbg:#3A1A15;
+  --card:#172238; --edge:#2B3B5C; --red:#FF8A66; color-scheme: dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0; min-height:100%; color:var(--text); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg,var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; font-size:18px; line-height:1.45;
+}
+main{max-width:680px;margin:0 auto;padding:20px 18px 56px}
+h1,h2,h3{font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;color:var(--ink);margin:0}
+h1{font-size:2rem;line-height:1.1}
+h1 .u{text-decoration:underline;text-decoration-color:var(--teal);text-decoration-thickness:3px;text-underline-offset:6px}
+h2{font-size:1.3rem;margin:28px 0 10px}
+h3{font-size:1.1rem;margin:18px 0 6px;color:var(--teal)}
+p{margin:6px 0}
+.sub{color:var(--muted);font-size:1rem}
+button{font:inherit;cursor:pointer;border:none;border-radius:14px;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.hidden{display:none!important}
+.count-down{margin-top:12px;background:var(--card);border:2px solid var(--edge);border-left:8px solid var(--red);border-radius:14px;padding:10px 14px}
+.count-down b{font-family:"Fredoka",sans-serif;font-size:1.25rem;color:var(--red)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.tile{background:var(--card);border:2px solid var(--edge);padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.tile .tt{font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.02rem;line-height:1.2}
+.tile .tp{font-size:.82rem;color:var(--muted);line-height:1.2}
+.tile .tb{height:7px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:auto}
+.tile .tb i{display:block;height:100%;background:var(--ok);width:0}
+.tile[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.tile[aria-pressed="false"]{opacity:.55}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{background:var(--card);color:var(--text);border:2px solid var(--edge);padding:9px 14px;font-size:1rem}
+.seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.start{display:grid;gap:10px;margin-top:8px}
+.start button{background:var(--marker);color:#1B2540;font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.25rem;padding:16px;text-align:left;box-shadow:0 3px 0 color-mix(in srgb,var(--marker) 60%, #000)}
+.start button small{display:block;font-family:"Atkinson Hyperlegible",sans-serif;font-weight:400;font-size:.9rem;opacity:.85}
+.linkish{background:none;color:var(--ink);text-decoration:underline;padding:6px 0;font-size:1rem}
+.mini{font-size:.9rem;padding:4px 10px;border:2px solid var(--edge);background:var(--card);color:var(--ink)}
+
+.topbar{display:flex;align-items:center;gap:12px}
+.topbar .linkish{text-decoration:none;font-size:1.6rem;line-height:1;padding:4px 8px}
+.bar{flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);width:0;transition:width .3s}
+.count{font-family:"Fredoka",sans-serif;color:var(--muted);white-space:nowrap}
+.card{background:var(--card);border:2px solid var(--edge);border-radius:18px;padding:20px 18px;margin-top:18px}
+.dir{font-size:.9rem;color:var(--teal);font-family:"Fredoka",sans-serif;font-weight:600}
+.prompt{font-size:1.35rem;margin:8px 0 2px;line-height:1.4}
+.prompt b{font-family:"Fredoka",sans-serif;font-weight:600}
+.prompt mark{background:var(--marker);color:#1B2540;border-radius:4px;padding:0 .15em}
+.hint{color:var(--muted);font-size:.98rem;margin-top:4px}
+.big{font-family:"Fredoka",sans-serif;font-size:1.9rem;font-weight:600;letter-spacing:.02em}
+
+.fig{width:100%;height:auto;max-width:640px;display:block;margin:12px auto 0;color:var(--text);overflow:visible}
+.fig .tl{font:600 15px "Fredoka",sans-serif;fill:currentColor}
+.fig .ml{font:700 19px "Fredoka",sans-serif;fill:var(--red)}
+.fig .mk{fill:var(--red)}
+.fig .gr{stroke:var(--line);stroke-width:1}
+.fig .ax{stroke:currentColor;stroke-width:2;fill:none}
+.fig .al{font:600 15px "Fredoka",sans-serif;fill:currentColor}
+.fig .pt line{stroke:var(--red);stroke-width:3;stroke-linecap:round}
+.fig .pl{font:700 16px "Fredoka",sans-serif;fill:var(--red)}
+.fig .pt.ok line{stroke:var(--ok)} .fig .pl.ok{fill:var(--ok)}
+.fig .pt.blue line{stroke:var(--ink)} .fig .pl.blue{fill:var(--ink)}
+.fig .poly{fill:none;stroke:var(--teal);stroke-width:2.5;stroke-linejoin:round}
+.fig .arr{stroke:var(--muted);stroke-width:2;stroke-dasharray:6 5;fill:none}
+.fig.place{cursor:crosshair;touch-action:manipulation;border:2px dashed var(--edge);border-radius:12px}
+
+.fields{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:16px;font-family:"Fredoka",sans-serif;font-size:1.35rem}
+.fields label{display:inline-flex;align-items:center;gap:8px}
+input.num{font:inherit;font-size:1.35rem;width:7.5em;padding:10px 12px;border:2px solid var(--edge);border-radius:12px;background:var(--paper);color:var(--text);text-align:center}
+input.num.s{width:4.5em}
+input.wide{width:100%;text-align:left}
+input.num.okf{border-color:var(--ok);background:var(--okbg)}
+input.num.badf{border-color:var(--bad);background:var(--badbg)}
+body.pen input.num{min-height:84px;font-size:2rem;border-style:dashed;border-width:3px;width:6.5em}
+body.pen input.num.s{width:4em}
+body.pen input.wide{width:100%}
+.colc{border-collapse:collapse;margin:12px 0 0;font-family:"Fredoka",sans-serif;font-size:1.8rem;font-weight:600}
+.colc td{width:1.15em;height:1.5em;text-align:center;padding:0;border:1px solid var(--grid)}
+.colc tr.rl td{border-bottom:3px solid var(--text)}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{background:var(--ink);color:var(--paper);padding:14px 20px;font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.15rem;flex:1}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.bad{background:var(--bad);color:#fff}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:16px}
+.choices.wide{grid-template-columns:1fr}
+.choices button{background:var(--paper);border:2px solid var(--edge);color:var(--text);padding:14px 12px;font-size:1.15rem;font-family:"Fredoka",sans-serif;text-align:center}
+.choices.wide button{text-align:left;font-family:"Atkinson Hyperlegible",sans-serif;font-size:1.05rem}
+.choices button.sel{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.choices button.right{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.choices button.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.order-out{font-family:"Fredoka",sans-serif;font-size:1.6rem;min-height:1.6em;margin-top:12px;color:var(--ink)}
+.feedback{margin-top:14px;border-radius:12px;padding:12px 14px}
+.feedback.ok{background:var(--okbg);color:var(--ok)}
+.feedback.bad{background:var(--badbg);color:var(--bad)}
+.feedback b{font-family:"Fredoka",sans-serif;font-size:1.15rem}
+.feedback .sol{color:var(--text);font-size:1.05rem;margin-top:6px}
+.feedback .ans{color:var(--text);font-family:"Fredoka",sans-serif;font-size:1.3rem;margin-top:2px}
+.mcard{font-size:1.25rem;line-height:1.5}
+.mback{margin-top:14px;padding-top:12px;border-top:2px dashed var(--edge);font-size:1.2rem}
+.mback b{color:var(--ink)}
+
+.score{font-family:"Fredoka",sans-serif;font-size:3.4rem;color:var(--ink);line-height:1}
+ul.hard{list-style:none;padding:0;margin:8px 0}
+ul.hard li{background:var(--card);border:2px solid var(--edge);border-radius:12px;padding:8px 12px;margin-bottom:6px}
+.skrow{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--edge);border-radius:12px;padding:8px 12px;margin-bottom:6px}
+.skrow .nm{flex:1}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--ok)}
+.timed{display:grid;grid-template-columns:1fr auto auto;gap:6px 10px;align-items:center;background:var(--card);border:2px solid var(--edge);border-radius:14px;padding:10px 12px}
+.timed .tm{font-family:"Fredoka",sans-serif;color:var(--muted)}
+.timed .tm.run{color:var(--red);font-size:1.2rem}
+.timed label{display:flex;gap:8px;align-items:center}
+.timed input{width:20px;height:20px}
+details summary{cursor:pointer;font-family:"Fredoka",sans-serif;color:var(--ink);font-size:1.15rem;font-weight:600}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+
+<section id="home">
+  <h1>Mathe: <span class="u">1. Schulaufgabe</span></h1>
+  <p class="sub">Natürliche und ganze Zahlen · Addition und Subtraktion</p>
+  <div class="count-down" id="cd"></div>
+
+  <h2>Welche Themen?</h2>
+  <p class="sub" style="margin:-4px 0 10px">Tippe Kacheln an oder ab. Der grüne Balken zeigt, wie gut es schon sitzt.</p>
+  <div class="tiles" id="tiles"></div>
+  <p><button class="linkish" id="allT">Alle auswählen</button></p>
+
+  <h2>Schreiben mit</h2>
+  <div class="seg" id="penSeg">
+    <button data-v="0">Tastatur</button>
+    <button data-v="1">Stift (Apple Pencil)</button>
+  </div>
+
+  <h2>Los geht’s</h2>
+  <div class="start">
+    <button id="goPractice">Üben<small>12 Aufgaben. Was schwer ist, kommt öfter.</small></button>
+    <button id="goMerk">Merkwissen aus dem Heft<small>Karteikarten mit allen Hefteinträgen zum Auswendiglernen</small></button>
+    <button id="goProbe">Probe-Schulaufgabe<small>14 gemischte Aufgaben aus allen Kapiteln, mit Stoppuhr</small></button>
+  </div>
+
+  <h2>Buchaufgaben auf Zeit</h2>
+  <p class="sub" style="margin:-4px 0 10px">Aus den Hinweisen zur Schulaufgabe. Buch aufschlagen, Start drücken, rechnen.</p>
+  <div class="timed" id="timed"></div>
+
+  <p style="margin-top:22px"><button class="linkish" id="showList">Alle Aufgabentypen und Lernstand</button></p>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="topbar">
+    <button class="linkish" id="quit" aria-label="Runde beenden">×</button>
+    <div class="bar"><i id="barFill"></i></div>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="card">
+    <div class="dir" id="dirLbl"></div>
+    <div class="prompt" id="prompt"></div>
+    <div id="figWrap"></div>
+    <div class="hint" id="hint"></div>
+    <div id="area"></div>
+    <div id="fb" class="feedback hidden"></div>
+    <div class="actions hidden" id="nextRow"><button class="btn" id="next">Weiter</button></div>
+  </div>
+</section>
+
+<section id="summary" class="hidden">
+  <h1>Geschafft!</h1>
+  <p class="score" id="score" style="margin-top:14px"></p>
+  <p class="sub" id="scoreTxt"></p>
+  <div id="hardWrap"><h2>Das üben wir nochmal</h2><ul class="hard" id="hardList"></ul></div>
+  <div class="actions"><button class="btn" id="again">Noch eine Runde</button><button class="btn ghost" id="toHome">Zur Übersicht</button></div>
+</section>
+
+<section id="list" class="hidden">
+  <div class="topbar"><button class="linkish" id="listBack" aria-label="Zurück">←</button><h1 style="font-size:1.5rem">Aufgabentypen</h1></div>
+  <p class="sub">Grüne Punkte: wie oft hintereinander richtig. Mit „üben“ trainierst du nur diesen Aufgabentyp.</p>
+  <div id="listBody"></div>
+  <p style="margin-top:20px"><button class="linkish" id="reset">Lernstand zurücksetzen</button></p>
+</section>
+
+</main>
+<script>
+// ===== Mathe-Trainer 5. Klasse, 1. Schulaufgabe am 16.11.2026 =====
+const SA_DATE=[2026,10,16]; // Jahr, Monat (0-basiert), Tag
+const KEY="mathe5_sa1_v1";
+const TOPICS=[
+ {id:"t11",t:"1.1 Zahlenstrahl und Koordinatensystem",p:"Buch S. 13 · Heft 22.9. und 28.9."},
+ {id:"t12",t:"1.2 Das Dezimalsystem",p:"Buch S. 14 · Heft 30.9."},
+ {id:"t13",t:"1.3 Zahlenmengen, Teilbarkeit",p:"Heft 7.10."},
+ {id:"t14",t:"1.4 Runden",p:"Buch S. 22 · Trainingsblatt"},
+ {id:"t15",t:"1.5 Negative Zahlen",p:"Heft 20.10. und 21.10."},
+ {id:"t16",t:"1.6 Anordnung und Betrag",p:"Trainingsblatt S 27 und S 28 · Heft 26.10."},
+ {id:"t21",t:"2.1 Addieren und Subtrahieren",p:"Buch S. 43 · Trainingsblatt S 37, S 38, S 41"},
+ {id:"op",t:"Operatoren",p:"Infoblatt: angeben, begründen, berechnen …"}
+];
+const BOOK_TIMED=[["S. 13 / 9",180],["S. 13 / 10",240],["S. 15 / 23",120],["S. 19 / 7",210],["S. 19 / 8",180],["S. 23 / 7",180],["S. 31 / 17",120],["S. 43 / 11",240],["S. 43 / 12",180],["S. 43 / 13",210]];
+
+// ---------- Hilfsfunktionen ----------
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const uniq=a=>[...new Set(a)];
+function fmt(n){const a=Math.abs(n);let s=String(a);if(a>=10000)s=s.replace(/\B(?=(\d{3})+(?!\d))/g,"\u202F");return (n<0?"−":"")+s;}
+function fmtS(n){return n>0?"+"+fmt(n):fmt(n);}
+function toInt(s){s=String(s).replace(/[−–—]/g,"-").replace(/[\s.\u202F\u00A0']/g,"");if(!/^[+-]?\d+$/.test(s))return NaN;return parseInt(s,10);}
+function intsIn(s){s=String(s);const i=Math.max(s.lastIndexOf("="),s.lastIndexOf("{"));if(i>=0)s=s.slice(i+1);s=s.replace(/[A-Za-z]\s*\d+/g,"").replace(/[−–—]/g,"-");return (s.match(/-?\d+/g)||[]).map(Number);}
+const acc=a=>Array.isArray(a)?a:[a];
+const YN=["Ja","Nein"];
+function sup(n){return "<sup>"+n+"</sup>";}
+
+// ---------- Zahlwörter ----------
+const EW=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn"];
+const ZW=["","","zwanzig","dreißig","vierzig","fünfzig","sechzig","siebzig","achtzig","neunzig"];
+function w99(n){if(n<20)return EW[n];const e=n%10,z=Math.floor(n/10);return e?(e===1?"ein":EW[e])+"und"+ZW[z]:ZW[z];}
+function w999(n){const h=Math.floor(n/100),r=n%100;let s="";if(h)s+=(h===1?"ein":EW[h])+"hundert";if(r)s+=w99(r);return s;}
+function words(n){
+ if(n===0)return "null";
+ const mrd=Math.floor(n/1e9),mio=Math.floor(n/1e6)%1000,t=Math.floor(n/1000)%1000,r=n%1000,parts=[];
+ if(mrd)parts.push(mrd===1?"eine Milliarde":w999(mrd)+" Milliarden");
+ if(mio)parts.push(mio===1?"eine Million":w999(mio)+" Millionen");
+ let low="";if(t)low+=w999(t).replace(/eins$/,"ein")+"tausend";if(r)low+=w999(r);
+ if(low)parts.push(low);
+ return parts.join(" ");
+}
+function okGroup(g){return g===1||g%100!==1;}
+function bigNum(){
+ for(let k=0;k<50;k++){
+  let n;
+  if(Math.random()<.5){ // unter einer Million, mit Nullen
+   const d=[R(1,9)];for(let i=0;i<5;i++)d.push(Math.random()<.4?0:R(0,9));n=+d.join("");
+  }else{
+   const mrd=pick([0,0,R(1,99)]),mio=pick([0,R(1,999),R(2,30)]),t=pick([0,0,R(1,999)]),r=pick([0,R(1,999),R(10,99)]);
+   n=mrd*1e9+mio*1e6+t*1e3+r;if(n<1e6)continue;
+   if(!okGroup(mrd)&&mrd||!okGroup(mio)&&mio)continue;
+  }
+  return n;
+ }
+ return 420007;
+}
+function mutate(n){
+ let s=String(n).split("");
+ const op=R(0,2);
+ if(op===0){const i=R(0,s.length-2);[s[i],s[i+1]]=[s[i+1],s[i]];}
+ else if(op===1){const zs=s.map((c,i)=>c==="0"&&i>0?i:-1).filter(i=>i>0);if(zs.length)s.splice(pick(zs),1);else s.splice(R(1,s.length-1),0,"0");}
+ else{s.splice(R(1,s.length-1),0,"0");}
+ if(s[0]==="0")return n;
+ const m=+s.join("");
+ if(m>=1e6&&(!okGroup(Math.floor(m/1e6)%1000)&&Math.floor(m/1e6)%1000||!okGroup(Math.floor(m/1e9))&&Math.floor(m/1e9)))return n;
+ return m>=1e11?n:m;
+}
+
+// ---------- Grafiken ----------
+function strahlSVG(v,labs,marks,neg){
+ const W=640,x0=34,dx=56;let s=`<svg class="fig" viewBox="0 0 ${W} 100" role="img" aria-label="Zahlenstrahl">`;
+ s+=`<line x1="${neg?8:x0}" y1="60" x2="${W-14}" y2="60" stroke="currentColor" stroke-width="2.5"/><path d="M${W-26} 52 L${W-12} 60 L${W-26} 68" fill="none" stroke="currentColor" stroke-width="2.5"/>`;
+ for(let i=0;i<=10;i++){const x=x0+i*dx;
+  s+=`<line x1="${x}" y1="50" x2="${x}" y2="70" stroke="currentColor" stroke-width="2"/>`;
+  if(labs.includes(i))s+=`<text x="${x}" y="92" text-anchor="middle" class="tl">${fmt(v(i))}</text>`;
+  if(marks[i])s+=`<path d="M${x} 46 l-7 -12 h14 z" class="mk"/><text x="${x}" y="26" text-anchor="middle" class="ml">${marks[i]}</text>`;}
+ return s+"</svg>";
+}
+function kosySVG(r,pts=[],polys=[],o={}){
+ const nx=r.xmax-r.xmin,ny=r.ymax-r.ymin;
+ const c=o.c||Math.max(24,Math.min(44,Math.floor(560/(nx+1.5))));
+ const ext=Math.round(c*.7),L=36,T=ext+18,W=L+nx*c+ext+22,H=T+ny*c+36;
+ const X=x=>L+(x-r.xmin)*c,Y=y=>T+(r.ymax-y)*c;
+ const meta=JSON.stringify({L,T,c,xmin:r.xmin,xmax:r.xmax,ymin:r.ymin,ymax:r.ymax});
+ let s=`<svg class="fig kosy${o.place?" place":""}" viewBox="0 0 ${W} ${H}" style="max-width:${Math.min(640,W*1.25)}px" data-meta='${meta}' role="img" aria-label="Koordinatensystem">`;
+ for(let x=r.xmin;x<=r.xmax;x++)s+=`<line class="gr" x1="${X(x)}" y1="${Y(r.ymin)}" x2="${X(x)}" y2="${Y(r.ymax)}"/>`;
+ for(let y=r.ymin;y<=r.ymax;y++)s+=`<line class="gr" x1="${X(r.xmin)}" y1="${Y(y)}" x2="${X(r.xmax)}" y2="${Y(y)}"/>`;
+ const ax=(r.ymin<=0&&r.ymax>=0)?0:r.ymin,ay=(r.xmin<=0&&r.xmax>=0)?0:r.xmin;
+ const xe=X(r.xmax)+ext,ye=Y(r.ymax)-ext;
+ s+=`<line class="ax" x1="${X(r.xmin)}" y1="${Y(ax)}" x2="${xe}" y2="${Y(ax)}"/><path class="ax" d="M${xe-9} ${Y(ax)-6} L${xe} ${Y(ax)} L${xe-9} ${Y(ax)+6}"/><text class="al" x="${xe}" y="${Y(ax)-10}" text-anchor="end">x</text>`;
+ s+=`<line class="ax" x1="${X(ay)}" y1="${Y(r.ymin)}" x2="${X(ay)}" y2="${ye}"/><path class="ax" d="M${X(ay)-6} ${ye+9} L${X(ay)} ${ye} L${X(ay)+6} ${ye+9}"/><text class="al" x="${X(ay)+10}" y="${ye+8}">y</text>`;
+ const ls=(nx>12||ny>12)?2:1;
+ for(let x=r.xmin;x<=r.xmax;x++){if(x===ay)continue;s+=`<line class="ax" x1="${X(x)}" y1="${Y(ax)-4}" x2="${X(x)}" y2="${Y(ax)+4}"/>`;if(x%ls===0)s+=`<text class="tl" x="${X(x)}" y="${Y(ax)+21}" text-anchor="middle">${fmt(x)}</text>`;}
+ for(let y=r.ymin;y<=r.ymax;y++){if(y===ax)continue;s+=`<line class="ax" x1="${X(ay)-4}" y1="${Y(y)}" x2="${X(ay)+4}" y2="${Y(y)}"/>`;if(y%ls===0)s+=`<text class="tl" x="${X(ay)-9}" y="${Y(y)+5}" text-anchor="end">${fmt(y)}</text>`;}
+ s+=`<text class="tl" x="${X(ay)-9}" y="${Y(ax)+21}" text-anchor="end">0</text>`;
+ for(const p of polys)s+=`<polyline class="poly" points="${p.map(q=>X(q[0])+","+Y(q[1])).join(" ")}"/>`;
+ for(const a of (o.arrows||[])){const x1=X(a[0][0]),y1=Y(a[0][1]),x2=X(a[1][0]),y2=Y(a[1][1]);s+=`<line class="arr" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;}
+ for(const p of pts)s+=ptSVG(X(p.x),Y(p.y),p.l,p.cls);
+ return s+`<g class="placeG"></g></svg>`;
+}
+function ptSVG(x,y,l,cls){const k=6;let s=`<g class="pt ${cls||""}"><line x1="${x-k}" y1="${y-k}" x2="${x+k}" y2="${y+k}"/><line x1="${x-k}" y1="${y+k}" x2="${x+k}" y2="${y-k}"/></g>`;if(l)s+=`<text class="pl ${cls||""}" x="${x+7}" y="${y-8}">${l}</text>`;return s;}
+function colHTML(a,b,op,res){
+ const n=Math.max(String(a).length,String(b).length,res!=null?String(res).length:0)+1;
+ const row=(num,pre)=>{const d=String(num).split("");const cells=Array(n).fill("");for(let i=0;i<d.length;i++)cells[n-d.length+i]=d[i];if(pre)cells[0]=pre;return cells.map(c=>`<td>${c}</td>`).join("");};
+ return `<table class="colc" aria-label="schriftliche Rechnung"><tr><td></td>${row(a)}</tr><tr class="rl"><td></td>${row(b,op)}</tr><tr><td></td>${res!=null?row(res):Array(n).fill("<td></td>").join("")}</tr></table>`;
+}
+
+// ---------- Aufgabentypen ----------
+const SK=[];
+function def(id,topic,name,gen){SK.push({id,topic,name,gen});}
+const LETTERS="ABCDEFGHKLMNPQRS".split("");
+
+// ===== 1.1 =====
+def("strahl","t11","Zahlenstrahl ablesen",()=>{
+ const step=pick([1,2,5,10,20,25,50,100,200,250,500,1000]);
+ const start=Math.random()<.5?0:step*R(1,9);
+ const a=R(0,4),b=a+pick([1,2,3]);
+ const free=[...Array(11).keys()].filter(i=>i!==a&&i!==b);
+ const [ka,kb]=shuffle(free);
+ const v=i=>start+i*step;
+ return {q:"Welche Zahlen gehören zu <b>A</b> und <b>B</b>?",fig:strahlSVG(v,[a,b],{[ka]:"A",[kb]:"B"},start!==0),
+  type:"in",fields:[{pre:"A =",ans:v(ka)},{pre:"B =",ans:v(kb)}],
+  hint:"Finde zuerst heraus, wie viel ein Strich (1 LE) wert ist.",
+  sol:`Von ${fmt(v(a))} bis ${fmt(v(b))} sind es ${b-a} Striche, also ist 1 LE hier ${fmt(step)}. A = ${fmt(v(ka))}, B = ${fmt(v(kb))}.`};
+});
+function kosyRead(r,needNeg){
+ let x,y;do{x=R(r.xmin,r.xmax);y=R(r.ymin,r.ymax);}while((x===0&&y===0)||(needNeg&&x>=0&&y>=0));
+ let x2,y2;do{x2=R(r.xmin,r.xmax);y2=R(r.ymin,r.ymax);}while(x2===x&&y2===y||(x2===y&&y2===x));
+ const [L1,L2]=shuffle(LETTERS);
+ return {q:`Gib die Koordinaten von <b>${L1}</b> an.`,fig:kosySVG(r,[{x,y,l:L1},{x:x2,y:y2,l:L2,cls:"blue"}]),
+  type:"in",pairOf:L1,fields:[{ans:x},{ans:y}],
+  sol:`${L1}(${fmt(x)}|${fmt(y)}): erst x (${x<0?"nach links":"nach rechts"} ${Math.abs(x)}), dann y (${y<0?"nach unten":"nach oben"} ${Math.abs(y)}).`};
+}
+function kosyPlace(r,needNeg){
+ let x,y;do{x=R(r.xmin,r.xmax);y=R(r.ymin,r.ymax);}while((x===y)||(needNeg&&x>=0&&y>=0));
+ const L=pick(LETTERS);
+ return {q:`Trage den Punkt <b>${L}(${fmt(x)}|${fmt(y)})</b> ein. Tippe auf die richtige Stelle im Gitter.`,fig:kosySVG(r,[],[],{place:true}),
+  type:"place",target:{x,y},label:L,show:`${L}(${fmt(x)}|${fmt(y)})`,
+  sol:`Vom Ursprung aus erst ${Math.abs(x)} ${x<0?"nach links":"nach rechts"} (x), dann ${Math.abs(y)} ${y<0?"nach unten":"nach oben"} (y).`};
+}
+def("kosyLesen","t11","Punkte im KoSy ablesen",()=>kosyRead({xmin:0,xmax:9,ymin:0,ymax:7}));
+def("kosyEin","t11","Punkte im KoSy eintragen",()=>kosyPlace({xmin:0,xmax:9,ymin:0,ymax:7}));
+const CAT={A:[6,0],B:[10,0],C:[13,4],D:[14,8],E:[10,6],F:[8,7],G:[6,6],H:[2,8],I:[3,4]};
+def("katze","t11","Katzenbild (Buch S. 13 / 9)",()=>{
+ const pts=Object.entries(CAT).map(([l,p])=>({x:p[0],y:p[1],l}));
+ const poly=["A","B","C","D","E","F","G","H","I","A"].map(l=>CAT[l]);
+ const r={xmin:0,xmax:15,ymin:0,ymax:9};
+ if(Math.random()<.35){
+  const [l,p]=pick(Object.entries(CAT));
+  const others=shuffle(Object.keys(CAT).filter(k=>k!==l)).slice(0,3);
+  const ch=shuffle([l,...others]);
+  return {q:`Welcher Punkt hat die Koordinaten <b>(${p[0]}|${p[1]})</b>?`,fig:kosySVG(r,pts,[poly]),type:"mc",choices:ch,correct:ch.indexOf(l),sol:`Erst ${p[0]} nach rechts, dann ${p[1]} nach oben: das ist ${l}.`};
+ }
+ const [l,p]=pick(Object.entries(CAT));
+ return {q:`Gib die Koordinaten von <b>${l}</b> an.`,fig:kosySVG(r,pts,[poly]),type:"in",pairOf:l,fields:[{ans:p[0]},{ans:p[1]}],sol:`${l}(${p[0]}|${p[1]})`};
+});
+const SHIP={A:[2,2],B:[7,2],C:[9,4],D:[6,4],E:[6,6],F:[4,6],G:[4,4],H:[1,4]};
+def("schiff","t11","Schiff verschieben (Buch S. 13 / 10)",()=>{
+ let dx,dy;do{dx=R(1,7);dy=R(0,5);}while(dx===0&&dy===0);
+ if(Math.random()<.3){dx=6;dy=4;}
+ const poly=["A","B","C","D","E","F","G","D","G","H","A"].map(l=>SHIP[l]);
+ const l=pick(["B","C","D","E","F","G","H"]),p=SHIP[l];
+ const A2=[SHIP.A[0]+dx,SHIP.A[1]+dy];
+ const pts=Object.entries(SHIP).map(([k,q])=>({x:q[0],y:q[1],l:k,cls:k===l?"":"blue"})).concat([{x:A2[0],y:A2[1],l:"A′"}]);
+ return {q:`Das Schiff wird verschoben, so dass alle Strecken gleich lang bleiben. A(2|2) kommt nach <b>A′(${A2[0]}|${A2[1]})</b>. Wohin kommt <b>${l}(${p[0]}|${p[1]})</b>?`,
+  fig:kosySVG({xmin:0,xmax:16,ymin:0,ymax:11},pts,[poly],{arrows:[[SHIP.A,A2]]}),
+  type:"in",pairOf:l+"′",fields:[{ans:p[0]+dx},{ans:p[1]+dy}],
+  sol:`A wandert ${dx} nach rechts und ${dy} nach oben. Jeder Punkt wandert genauso: ${l}′(${p[0]}+${dx}|${p[1]}+${dy}) = ${l}′(${p[0]+dx}|${p[1]+dy}).`};
+});
+
+// ===== 1.2 =====
+const RULE_W="Unter einer Million: klein und zusammen. Über einer Million: getrennt, Million und Milliarde groß, die Zahlen davor klein und zusammen.";
+def("wortMC","t12","Zahlen in Worten",()=>{
+ const n=bigNum(),right=words(n);const opts=new Set([right]);
+ let g=0;while(opts.size<3&&g++<40){const m=mutate(n);if(m!==n)opts.add(words(m));}
+ let st=n>=1e6?right.replace(/ /g,"").toLowerCase():(right.includes("tausend")&&!right.endsWith("tausend")?right.replace("tausend"," Tausend "):null);
+ if(st&&!opts.has(st))opts.add(st);
+ const ch=shuffle([...opts]);
+ return {q:`Wie schreibt man <b>${fmt(n)}</b> in Worten?`,type:"mc",choices:ch,correct:ch.indexOf(right),sol:RULE_W};
+});
+def("wortZiff","t12","Zahlwort in Ziffern schreiben",()=>{
+ const n=bigNum();
+ return {q:`Schreibe mit Ziffern:<br><i>${words(n)}</i>`,type:"in",fields:[{ans:n,wide:true}],sol:`${words(n)} = ${fmt(n)}`};
+});
+const PLACES=["Einer","Zehner","Hunderter","Tausender","Zehntausender","Hunderttausender","Millionen","Zehnmillionen"];
+def("stelle","t12","Stellenwert einer Ziffer",()=>{
+ const len=R(6,8);let s;do{s=String(R(1,9));for(let i=1;i<len;i++)s+=R(0,9);}while(false);
+ const d=s.split("");let idx;do{idx=R(0,len-1);}while(d[idx]==="0");
+ const pos=len-1-idx;
+ let html="";d.forEach((c,i)=>{if(i>0&&(len-i)%3===0)html+="\u202F";html+=i===idx?`<mark>${c}</mark>`:c;});
+ const others=shuffle([...Array(len).keys()].filter(p=>p!==pos)).slice(0,3);
+ const ch=shuffle([pos,...others]).map(p=>`${d[idx]} ${PLACES[p]}`);
+ return {q:`Welchen Wert hat die markierte Ziffer?<br><span class="big">${html}</span>`,type:"mc",choices:ch,correct:ch.indexOf(`${d[idx]} ${PLACES[pos]}`),
+  sol:`Die ${d[idx]} steht an der ${PLACES[pos]}stelle: ${d[idx]} ${PLACES[pos]} = ${fmt(+d[idx]*10**pos)}.`};
+});
+def("tafel","t12","Zahl aus Stellenwerten",()=>{
+ const ps=shuffle([0,1,2,3,4,5,6]).slice(0,R(2,4)).sort((a,b)=>b-a);
+ let n=0;const parts=ps.map(p=>{const z=R(1,9);n+=z*10**p;return `${z} ${PLACES[p]}`;});
+ return {q:`Schreibe als Zahl:<br><b>${parts.join(" + ")}</b>`,type:"in",fields:[{ans:n,wide:true}],sol:`Leere Stellen bekommen eine 0: ${fmt(n)}`};
+});
+def("pot","t12","Zehnerpotenzen",()=>{
+ const v=R(0,4),e=R(2,9);
+ if(v===0)return {q:`Schreibe als Zehnerpotenz: <b>${fmt(10**e)}</b> = 10${sup("?")}`,type:"in",fields:[{pre:"Exponent:",ans:e,s:true}],sol:`${fmt(10**e)} hat ${e} Endnullen, also 10${sup(e)} („zehn hoch ${e}“).`};
+ if(v===1)return {q:`Schreibe ohne Potenz: <b>10${sup(e)}</b> = ?`,type:"in",fields:[{ans:10**e,wide:true}],sol:`Der Exponent ${e} sagt: ${e} Endnullen. 10${sup(e)} = ${fmt(10**e)}`};
+ const a=pick([R(2,9),R(2,9),R(11,99),R(101,999)]);if(a%10===0)return SKM.pot.gen();
+ const e2=R(2,a>99?6:7),n=a*10**e2;
+ if(v===2)return {q:`Ergänze: <b>${fmt(n)}</b> = ${a} · 10${sup("?")}`,type:"in",fields:[{pre:"Exponent:",ans:e2,s:true}],sol:`Nach der ${a} kommen noch ${e2} Endnullen: ${fmt(n)} = ${a} · ${fmt(10**e2)} = ${a} · 10${sup(e2)}`};
+ if(v===3)return {q:`Schreibe ohne Potenz: <b>${a} · 10${sup(e2)}</b> = ?`,type:"in",fields:[{ans:n,wide:true}],sol:`${a} mit ${e2} Nullen dahinter: ${fmt(n)}`};
+ const ch=["die Anzahl der Endnullen","die Anzahl aller Ziffern","wie oft man 10 addiert","die erste Ziffer der Zahl"];
+ return {q:"Was gibt der Exponent bei einer Zehnerpotenz an?",type:"mc",choices:ch,correct:0,sol:"Bei Zehnerpotenzen gibt der Exponent die Anzahl der Endnullen an: 10³ = 1 000."};
+});
+const ZAEHL=[
+ ["Wie viele dreistellige Zahlen enden auf 5?",90,"Hunderter: 9 Möglichkeiten (1 bis 9), Zehner: 10 Möglichkeiten (0 bis 9), Einer: nur die 5. Insgesamt 9 · 10 = 90."],
+ ["Wie viele zweistellige Zahlen gibt es?",90,"Zehner: 9 Möglichkeiten (1 bis 9), Einer: 10 Möglichkeiten. 9 · 10 = 90."],
+ ["Wie viele dreistellige Zahlen gibt es?",900,"9 · 10 · 10 = 900 (alle Zahlen von 100 bis 999)."],
+ ["Wie viele vierstellige Zahlen enden auf 00?",90,"Tausender: 9, Hunderter: 10, Zehner und Einer sind fest. 9 · 10 = 90."],
+ ["Wie viele dreistellige Zahlen beginnen mit 7?",100,"Hunderter fest (7), Zehner: 10, Einer: 10. 10 · 10 = 100."],
+ ["Wie viele dreistellige Zahlen haben nur gerade Ziffern?",100,"Hunderter: 2, 4, 6, 8 (4 Möglichkeiten, die 0 geht vorne nicht), Zehner und Einer je 5 (0, 2, 4, 6, 8). 4 · 5 · 5 = 100."],
+ ["Wie viele zweistellige Zahlen haben zwei gleiche Ziffern?",9,"11, 22, 33, …, 99: 9 Möglichkeiten."],
+ ["Wie viele dreistellige Zahlen enden auf 0?",90,"9 · 10 = 90."],
+ ["Wie viele zweistellige Zahlen enden auf 3?",9,"Zehner 1 bis 9: 9 Möglichkeiten."],
+ ["Wie viele vierstellige Zahlen enden auf 5?",900,"Tausender 9, Hunderter 10, Zehner 10: 9 · 10 · 10 = 900."]
+];
+def("zaehl","t12","Wie viele Möglichkeiten?",()=>{const [q,a,s]=pick(ZAEHL);return {q,type:"in",fields:[{ans:a}],hint:"Überlege für jede Stelle, wie viele Ziffern möglich sind.",sol:s};});
+
+// ===== 1.3 =====
+def("menge","t13","ℕ und ℕ₀",()=>{
+ if(Math.random()<.3){const ch=["{0; 1; 2; 3; …}","{1; 2; 3; 4; …}","{…; −2; −1; 0; 1; 2; …}","{2; 4; 6; 8; …}"];const w=Math.random()<.5;
+  return {q:`Welche Menge ist <b>${w?"ℕ₀":"ℕ"}</b>?`,type:"mc",choices:ch,correct:w?0:1,sol:"ℕ = {1; 2; 3; …} ohne Null, ℕ₀ = {0; 1; 2; 3; …} mit Null."};}
+ const x=pick([0,0,R(1,60),-R(1,20)]),set=pick(["ℕ","ℕ₀"]);
+ const yes=x>0||(x===0&&set==="ℕ₀");
+ return {q:`Ist <b>${fmt(x)}</b> ein Element von <b>${set}</b>?`,type:"mc",choices:YN,correct:yes?0:1,sol:"ℕ = {1; 2; 3; …} ohne Null, ℕ₀ = {0; 1; 2; 3; …} mit Null. Negative Zahlen gehören zu keiner der beiden Mengen."};
+});
+function qsum(n){return String(Math.abs(n)).split("").reduce((a,c)=>a+ +c,0);}
+function ruleText(n,d){
+ const s=String(n),last=+s.slice(-1),l2=+s.slice(-2),q=qsum(n);
+ switch(d){
+  case 2:return `Endziffer ${last} ist ${last%2?"ungerade":"gerade"}.`;
+  case 5:return `Endziffer ${last}: durch 5 teilbar nur bei Endziffer 0 oder 5.`;
+  case 10:return `Endziffer ${last}: durch 10 teilbar nur bei Endziffer 0.`;
+  case 4:return `Die letzten beiden Ziffern bilden ${l2}. ${l2} ist ${l2%4?"nicht ":""}durch 4 teilbar.`;
+  case 25:return `Die letzten beiden Ziffern sind ${s.slice(-2)}. Durch 25 teilbar nur bei 00, 25, 50 oder 75.`;
+  case 3:case 9:return `Quersumme: ${s.split("").join(" + ")} = ${q}. ${q} ist ${q%d?"nicht ":""}durch ${d} teilbar.`;
+ }
+}
+def("teilbar","t13","Teilbarkeitsregeln",()=>{
+ const d=pick([2,3,4,5,9,10,25,3,9]);let n;const yes=Math.random()<.5;
+ do{n=R(100,99999);if(yes)n=n-n%d||d*R(20,99);}while((n%d===0)!==yes||n<100);
+ return {q:`Ist <b>${fmt(n)}</b> durch <b>${d}</b> teilbar?`,type:"mc",choices:YN,correct:yes?0:1,sol:ruleText(n,d)};
+});
+def("ziffer","t13","Fehlende Ziffer (Teiler 3 und 9)",()=>{
+ for(;;){const len=R(3,5),pos=R(1,len-1);const d=[R(1,9)];for(let i=1;i<len;i++)d.push(R(0,9));
+  const s=d.reduce((a,c,i)=>i===pos?a:a+c,0);if(s%9===0)continue;const x=(9-s%9)%9;
+  const shown=d.map((c,i)=>i===pos?"▢":c).join("");
+  return {q:`Welche Ziffer gehört in das Kästchen, damit die Zahl durch <b>9</b> teilbar ist?<br><span class="big">${shown}</span>`,type:"in",fields:[{ans:x,s:true}],
+   sol:`Quersumme der anderen Ziffern: ${s}. Bis zur nächsten Neunerzahl (${s+x}) fehlen ${x}.`};}
+});
+function divisors(n){const a=[];for(let i=1;i<=n;i++)if(n%i===0)a.push(i);return a;}
+def("teiler","t13","Teilermenge",()=>{
+ const n=pick([12,15,16,18,20,24,28,30,32,36,40,42,45,48,50,60]);const t=divisors(n);
+ const pairs=[];for(const a of t){const b=n/a;if(a<=b)pairs.push(`${a} · ${b}`);}
+ return {q:`Gib die Teilermenge <b>T<sub>${n}</sub></b> an.`,type:"set",ans:t,hint:"Trenne die Zahlen mit Strichpunkt, z. B. 1; 2; 3",
+  show:`T<sub>${n}</sub> = {${t.join("; ")}}`,sol:`Suche Teilerpaare: ${pairs.join(", ")}.`};
+});
+def("vielf","t13","Vielfachenmenge",()=>{
+ const n=R(3,15),v=[1,2,3,4,5].map(k=>k*n);
+ return {q:`Gib die ersten fünf Elemente der Vielfachenmenge <b>V<sub>${n}</sub></b> an.`,type:"set",ans:v,vielf:true,hint:"Trenne die Zahlen mit Strichpunkt.",
+  show:`V<sub>${n}</sub> = {${v.join("; ")}; …}`,sol:`Immer ${n} dazu: ${v.join(", ")}, …`};
+});
+const isPrime=n=>{if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;};
+const TRICKY=[1,9,15,21,27,33,39,49,51,57,63,69,77,81,87,91,93];
+function primSol(n){if(n===1)return "1 ist keine Primzahl: Sie hat nur einen Teiler.";if(isPrime(n))return `${n} hat nur die Teiler 1 und ${n}. Also ist ${n} eine Primzahl.`;let f=2;while(n%f)f++;return `${n} = ${f} · ${n/f}. Also hat ${n} mehr als zwei Teiler.`;}
+def("prim","t13","Primzahlen",()=>{
+ if(Math.random()<.4){const p=pick([2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]);const o=shuffle(TRICKY).slice(0,3);const ch=shuffle([p,...o]);
+  return {q:"Welche Zahl ist eine Primzahl?",type:"mc",choices:ch.map(String),correct:ch.indexOf(p),sol:`${primSol(p)} ${o.map(x=>primSol(x)).join(" ")}`};}
+ const n=Math.random()<.5?pick([2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]):pick(TRICKY.concat([4,25,35,45,55,65,85,95]));
+ return {q:`Ist <b>${n}</b> eine Primzahl?`,type:"mc",choices:YN,correct:isPrime(n)?0:1,sol:primSol(n)+" Primzahlen haben genau zwei Teiler: 1 und sich selbst."};
+});
+def("quad","t13","Quadratzahlen",()=>{
+ const k=R(2,20);
+ if(Math.random()<.5)return {q:`Berechne die Quadratzahl: <b>${k} · ${k}</b>`,type:"in",fields:[{ans:k*k}],sol:`${k} · ${k} = ${k*k}`};
+ const sq=k*k,o=new Set();while(o.size<3){const m=sq+pick([-3,-2,-1,1,2,3,10,-10]);if(m>1&&!Number.isInteger(Math.sqrt(m)))o.add(m);}
+ const ch=shuffle([sq,...o]);
+ return {q:"Welche Zahl ist eine Quadratzahl?",type:"mc",choices:ch.map(String),correct:ch.indexOf(sq),sol:`${sq} = ${k} · ${k}. Quadratzahlen: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, …`};
+});
+
+// ===== 1.4 =====
+const RPL=[["Zehner",10],["Hunderter",100],["Tausender",1000],["Zehntausender",1e4],["Hunderttausender",1e5]];
+def("rund","t14","Runden auf Stellen",()=>{
+ const [nm,p]=pick(RPL);let n=R(p*1.2,Math.min(p*1000,9e6));
+ if(Math.random()<.3){const q=p/10;n=Math.floor(n/(p*10))*(p*10)+9*p+R(5,9)*q+R(0,q-1);} // Übertrag erzwingen
+ const res=Math.round(n/p)*p;const dig=Math.floor(n/(p/10))%10;
+ return {q:`Runde <b>${fmt(n)}</b> auf <b>${nm}</b>.`,type:"in",fields:[{ans:res,wide:true}],
+  sol:`Rundungsstelle: ${nm}. Die Ziffer rechts daneben ist ${dig}, also ${dig>=5?"aufrunden (5 bis 9)":"abrunden (0 bis 4)"}. ${fmt(n)} ≈ ${fmt(res)}`};
+});
+def("rundEinh","t14","Runden mit Einheiten",()=>{
+ const t=R(0,4);
+ if(t===0){const a=R(1,59),b=Math.random()<.5?R(30,49):R(1,59);const r=a+(b>=30?1:0);
+  return {q:`Runde <b>${a} min ${b} s</b> auf ganze Minuten.`,type:"in",fields:[{ans:r,post:"min",s:true}],sol:`Vorsicht: 1 min = 60 s. Die Hälfte sind 30 s. ${b} s ist ${b>=30?"mindestens 30 s, also aufrunden":"weniger als 30 s, also abrunden"}: ${a} min ${b} s ≈ ${r} min.`};}
+ if(t===1){const a=R(1,12),b=Math.random()<.5?R(30,49):R(1,59);const r=a+(b>=30?1:0);
+  return {q:`Runde <b>${a} h ${b} min</b> auf ganze Stunden.`,type:"in",fields:[{ans:r,post:"h",s:true}],sol:`Vorsicht: 1 h = 60 min. Die Hälfte sind 30 min. ${b} min → ${b>=30?"aufrunden":"abrunden"}: ≈ ${r} h.`};}
+ if(t===2||t===3){const [u,s,full]=t===2?["kg","g","Kilogramm"]:["km","m","Kilometer"];const a=R(1,40),b=R(1,999);const r=a+(b>=500?1:0);
+  return {q:`Runde <b>${a} ${u} ${b} ${s}</b> auf ganze ${full}.`,type:"in",fields:[{ans:r,post:u,s:true}],sol:`1 ${u} = 1 000 ${s}. Die Hälfte sind 500 ${s}. ${b} ${s} → ${b>=500?"aufrunden":"abrunden"}: ≈ ${r} ${u}.`};}
+ const a=R(1,99),b=R(1,99);const r=a+(b>=50?1:0);
+ return {q:`Runde <b>${a} € ${b} ct</b> auf ganze Euro.`,type:"in",fields:[{ans:r,post:"€",s:true}],sol:`1 € = 100 ct. Die Hälfte sind 50 ct. ${b} ct → ${b>=50?"aufrunden":"abrunden"}: ≈ ${r} €.`};
+});
+def("rundGrenz","t14","Kleinste und größte Zahl vor dem Runden",()=>{
+ const [nm,p]=pick(RPL.slice(0,3));const v=p*R(2,99);
+ return {q:`Eine natürliche Zahl wurde auf <b>${nm}</b> gerundet. Das Ergebnis ist <b>${fmt(v)}</b>. Welche Zahl war es mindestens, welche höchstens?`,
+  type:"in",fields:[{pre:"kleinste:",ans:v-p/2},{pre:"größte:",ans:v+p/2-1}],
+  sol:`Ab ${fmt(v-p/2)} wird auf ${fmt(v)} aufgerundet, bis ${fmt(v+p/2-1)} wird abgerundet (${fmt(v+p/2)} würde schon auf ${fmt(v+p)} gerundet).`};
+});
+
+// ===== 1.5 =====
+def("gerade","t15","Zahlengerade ablesen",()=>{
+ const step=pick([1,1,2,5,10,25,50,100]);const i0=R(3,8);const start=-i0*step;const v=i=>start+i*step;
+ const o=pick([0,1,2,i0-1,i0+1].filter(i=>i>=0&&i<=10&&i!==i0));
+ const free=[...Array(11).keys()].filter(i=>i!==i0&&i!==o);
+ let ka=pick(free.filter(i=>i<i0));let kb=pick(free.filter(i=>i!==ka));
+ return {q:"Welche Zahlen gehören zu <b>A</b> und <b>B</b>?",fig:strahlSVG(v,[i0,o],{[ka]:"A",[kb]:"B"},true),
+  type:"in",fields:[{pre:"A =",ans:v(ka)},{pre:"B =",ans:v(kb)}],hint:"Links von der Null sind die Zahlen negativ.",
+  sol:`1 LE ist hier ${fmt(step)}. A = ${fmt(v(ka))}, B = ${fmt(v(kb))}.`};
+});
+def("gegen","t15","Gegenzahl",()=>{
+ const x=pick([-1,1,-1])*R(1,999);
+ return {q:`Gib die Gegenzahl von <b>${fmt(x)}</b> an.`,type:"in",fields:[{ans:-x}],sol:`Gegenzahlen unterscheiden sich nur durch ihr Vorzeichen: ${fmt(x)} und ${fmt(-x)}.`};
+});
+def("mengeZ","t15","Menge ℤ, positiv und negativ",()=>{
+ const t=R(0,2);
+ if(t===0){const x=pick([0,-R(1,99),R(1,99)]),set=pick(["ℤ","ℕ","ℕ₀","ℤ"]);const yes=set==="ℤ"||x>0||(x===0&&set==="ℕ₀");
+  return {q:`Ist <b>${fmt(x)}</b> ein Element von <b>${set}</b>?`,type:"mc",choices:YN,correct:yes?0:1,sol:"ℤ = {…; −2; −1; 0; 1; 2; …} enthält alle ganzen Zahlen. ℕ und ℕ₀ enthalten keine negativen Zahlen."};}
+ if(t===1){const ch=["positiv","negativ","weder positiv noch negativ"];return {q:"Die Null ist …",type:"mc",choices:ch,correct:2,sol:"Die Null ist weder negativ noch positiv."};}
+ const a=-R(1,15),b=-R(1,15);if(a===b)return SKM.mengeZ.gen();const ch=[`${fmt(a)} °C`,`${fmt(b)} °C`];
+ return {q:"Welche Temperatur ist kälter?",type:"mc",choices:ch,correct:a<b?0:1,sol:`${fmt(Math.min(a,b))} °C liegt weiter links auf der Zahlengeraden (weiter unter Null), ist also kälter.`};
+});
+def("kosyNeg","t15","KoSy mit negativen Zahlen ablesen",()=>kosyRead({xmin:-5,xmax:5,ymin:-5,ymax:5},true));
+def("kosyNegEin","t15","KoSy mit negativen Zahlen eintragen",()=>kosyPlace({xmin:-5,xmax:5,ymin:-5,ymax:5},true));
+
+// ===== 1.6 =====
+def("vgl","t16","Kleiner oder größer?",()=>{
+ let a,b,la,lb;const t=R(0,3);
+ if(t===3){a=-R(1,20);b=R(1,20);la=`|${fmt(a)}|`;lb=fmt(b);const va=-a;const ch=["<",">","="];return {q:`Setze das richtige Zeichen ein:<br><span class="big">${la} ▢ ${lb}</span>`,type:"mc",choices:ch,correct:va<b?0:va>b?1:2,sol:`|${fmt(a)}| = ${va}. Vergleiche ${va} mit ${b}.`};}
+ a=R(-60,30);b=a+pick([-1,1])*R(1,20);if(t===0){a=-Math.abs(a)-1;b=-Math.abs(b)-1;if(a===b)b--;}
+ const ch=["<",">"];
+ return {q:`Setze das richtige Zeichen ein:<br><span class="big">${fmt(a)} ▢ ${fmt(b)}</span>`,type:"mc",choices:ch,correct:a<b?0:1,sol:`${fmt(Math.max(a,b))} liegt weiter rechts auf der Zahlengeraden, ist also größer. Das Krokodil frisst die größere Zahl.`};
+});
+def("ordnen","t16","Der Größe nach ordnen",()=>{
+ const base=R(5,30);let nums=uniq([-base,-base-R(1,12),-base+R(1,4),pick([base,R(1,40),-R(1,4)])]);
+ while(nums.length<4)nums.push(nums[0]-nums.length*3);
+ nums=shuffle(nums);const lab=["A","B","C","D"];const items=nums.map((n,i)=>({l:lab[i],n}));
+ const order=items.slice().sort((x,y)=>x.n-y.n).map(x=>x.l);
+ return {q:`Ordne die Zahlen der Größe nach, mit der <b>kleinsten</b> zuerst. Tippe die Buchstaben der Reihe nach an.<br>${items.map(x=>`<b>${x.l}:</b> ${fmt(x.n)}`).join(" &nbsp; ")}`,
+  type:"order",items:lab,ans:order,show:order.join(" < "),sol:order.map(l=>fmt(items.find(x=>x.l===l).n)).join(" < ")};
+});
+def("betrag","t16","Betrag und Gegenzahl",()=>{
+ const x=pick([-1,1])*R(1,300);
+ if(Math.random()<.4){return {q:`Berechne: <span class="big">|${fmt(x)}|</span>`,type:"in",fields:[{ans:Math.abs(x)}],sol:`Der Betrag ist der Abstand zur Null: |${fmt(x)}| = ${Math.abs(x)}.`};}
+ return {q:`Gib Betrag und Gegenzahl von <b>${fmt(x)}</b> an.`,type:"in",fields:[{pre:"Betrag:",ans:Math.abs(x)},{pre:"Gegenzahl:",ans:-x}],
+  sol:`Betrag = Abstand zur Null = ${Math.abs(x)}. Gegenzahl = anderes Vorzeichen = ${fmt(-x)}.`};
+});
+def("zwischen","t16","Wie viele Zahlen liegen dazwischen?",()=>{
+ const a=pick([-R(2,30),-R(50,120)]),b=pick([R(2,30),-R(1,Math.abs(a)-2||1)]);if(b<=a+1)return SKM.zwischen.gen();
+ const [x,y]=shuffle([a,b]);
+ return {q:`Wie viele ganze Zahlen liegen zwischen <b>${fmtS(x)}</b> und <b>${fmtS(y)}</b>?`,type:"in",fields:[{ans:b-a-1}],
+  sol:`Von ${fmt(a)} bis ${fmt(b)} sind es ${b-a} Schritte. Dazwischen liegen ${b-a-1} Zahlen, denn die beiden Randzahlen zählen nicht mit.`};
+});
+def("mitte","t16","Eine Zahl gesucht (Trainingsblatt S 28 / 1)",()=>{
+ const t=R(0,2);
+ if(t<2){let a,b;do{a=R(-30,15);b=R(-15,30);}while((a-b)%2||a===b);const m=(a+b)/2;
+  const q=t?`Sie liegt in der Mitte von <b>${fmt(a)}</b> und <b>${fmt(b)}</b>.`:`Sie ist von <b>${fmt(a)}</b> genauso weit entfernt wie von <b>${fmt(b)}</b>.`;
+  return {q:`Wie heißt die Zahl? ${q}`,type:"in",fields:[{ans:m}],hint:"Zeichne dir eine Zahlengerade.",sol:`Abstand von ${fmt(a)} bis ${fmt(b)}: ${Math.abs(b-a)}. Die Hälfte davon ist ${Math.abs(b-a)/2}. Gesuchte Zahl: ${fmt(m)}.`};}
+ let p,q;do{p=R(-20,5);q=R(-20,5);}while(p===q||(p-q)%3);const x1=q+(p-q)/3,x2=2*q-p;
+ return {q:`Wie heißt die Zahl? Sie ist doppelt so weit entfernt von <b>${fmt(p)}</b> wie von <b>${fmt(q)}</b>.`,type:"in",fields:[{ans:[x1,x2]}],hint:"Zeichne dir eine Zahlengerade.",
+  sol:`Zwischen den beiden Zahlen: ${fmt(x1)} (Abstand ${Math.abs(x1-p)} zu ${fmt(p)}, Abstand ${Math.abs(x1-q)} zu ${fmt(q)}). Auch ${fmt(x2)} passt (auf der anderen Seite von ${fmt(q)}).`};
+});
+def("zwei","t16","Zwei Zahlen gesucht (Trainingsblatt S 28 / 2)",()=>{
+ const t=R(0,2);
+ if(t===0){const s=-R(5,40),d=R(5,40);return {q:`Zu welchen Zahlen kommt man auf der Zahlengeraden, wenn man von <b>${fmt(s)}</b> um <b>${d}</b> nach rechts bzw. nach links geht?`,type:"in",fields:[{pre:"rechts:",ans:s+d},{pre:"links:",ans:s-d}],sol:`Nach rechts wird es größer: ${fmt(s+d)}. Nach links wird es kleiner: ${fmt(s-d)}.`};}
+ const m=-R(10,700),d=R(5,70);
+ if(t===1)return {q:`Welche beiden Zahlen haben auf der Zahlengeraden von <b>${fmt(m)}</b> den Abstand <b>${d}</b>?`,type:"in",unordered:true,fields:[{ans:m-d},{ans:m+d}],sol:`${fmt(m)} − ${d} = ${fmt(m-d)} und ${fmt(m)} + ${d} = ${fmt(m+d)}.`};
+ return {q:`Der Abstand zweier Zahlen ist <b>${2*d}</b>. Beide liegen gleich weit von <b>${fmt(m)}</b> entfernt. Welche Zahlen sind es?`,type:"in",unordered:true,fields:[{ans:m-d},{ans:m+d}],sol:`Jede Zahl ist ${2*d} : 2 = ${d} von ${fmt(m)} entfernt: ${fmt(m-d)} und ${fmt(m+d)}.`};
+});
+def("drei","t16","Drei Zahlen gesucht (Trainingsblatt S 28 / 3)",()=>{
+ const st=pick([1,2,3,4,5,6,10,25])*pick([1,-1]);const a=pick([0,0,-R(1,20),R(1,10)]);const b=a+4*st;
+ const f=[1,2,3].map(k=>({ans:a+k*st,s:true}));
+ return {q:`Füge drei Zahlen ein, so dass die Abstände gleich groß sind:<br><span class="big">${fmtS(a)}, ▢, ▢, ▢, ${fmtS(b)}</span>`,type:"in",fields:f,
+  sol:`Gesamtabstand ${Math.abs(b-a)}, aufgeteilt in 4 gleiche Schritte zu je ${Math.abs(st)}: ${[a,a+st,a+2*st,a+3*st,b].map(fmt).join("; ")}.`};
+});
+def("rf","t16","Richtig oder falsch?",()=>{
+ const t=R(0,6);let txt,yes,ex;
+ if(t===0){const a=-R(1,40),b=-R(1,40);if(a===b)return SKM.rf.gen();txt=`${fmt(a)} ist kleiner als ${fmt(b)}.`;yes=a<b;ex=`${fmt(Math.min(a,b))} liegt weiter links, ist also kleiner.`;}
+ else if(t===1){const a=pick([-R(1,400),R(1,50)]),b=pick([-R(1,50),R(1,400)]);if(a===b)return SKM.rf.gen();const side=pick(["links","rechts"]);txt=`${fmt(a)} liegt auf der Zahlengeraden ${side} von ${fmt(b)}.`;yes=side==="links"?a<b:a>b;ex=`${fmt(a)} ist ${a<b?"kleiner":"größer"} als ${fmt(b)}, liegt also ${a<b?"links":"rechts"} davon.`;}
+ else if(t===2){const m=R(2,6),k=pick([2*m-1,2*m-1,2*m-2,2*m+1,m]);txt=`Es gibt ${k} ganze Zahlen, deren Betrag kleiner als ${m} ist.`;yes=k===2*m-1;ex=`Das sind ${Array.from({length:2*m-1},(_,i)=>fmt(i-m+1)).join("; ")}, also ${2*m-1} Zahlen.`;}
+ else if(t===3){const a=-R(2,20),b=-R(2,20),s=Math.abs(a)+Math.abs(b),g=pick([s,s,Math.abs(a+b)===s?s+2:-(s)]);txt=`Die Summe der Beträge von ${fmt(a)} und ${fmt(b)} ist ${fmt(g)}.`;yes=g===s;ex=`|${fmt(a)}| + |${fmt(b)}| = ${-a} + ${-b} = ${s}.`;}
+ else if(t===4){const a=-R(2,20),b=R(1,25);txt=`${fmt(a)} ist kleiner als ${b}, aber der Betrag von ${fmt(a)} ist größer als ${b}.`;yes=-a>b;ex=`${fmt(a)} < ${b} stimmt immer. |${fmt(a)}| = ${-a} ist ${-a>b?"größer":"nicht größer"} als ${b}.`;}
+ else{const F=[["Addiert man zu einer Zahl ihren Betrag, so erhält man immer null.",false,"Gegenbeispiel: 5 + |5| = 10."],["Die Null ist eine positive Zahl.",false,"Die Null ist weder positiv noch negativ."],["Jede natürliche Zahl ist auch eine ganze Zahl.",true,"ℕ ist ein Teil von ℤ."],["Eine Zahl und ihre Gegenzahl haben den gleichen Betrag.",true,"z. B. |−4| = |4| = 4."],["Der Betrag einer Zahl ist nie negativ.",true,"Ein Abstand kann nicht negativ sein."],["−100 ist größer als −99.",false,"−100 liegt links von −99."]];[txt,yes,ex]=pick(F);}
+ return {q:txt,type:"mc",choices:["Richtig","Falsch"],correct:yes?0:1,sol:ex};
+});
+def("betragWahl","t16","Betrag größer als … (Trainingsblatt S 27 / 6)",()=>{
+ const th=R(5,25);let ns=uniq(shuffle([th,-th,th+R(1,9),-(th+R(1,15)),th-R(1,4),-(th-R(1,4)),-R(1,4),R(th+10,th+30)])).slice(0,6);
+ const corr=ns.map(n=>Math.abs(n)>th);
+ return {q:`Wähle alle Zahlen aus, deren Betrag größer ist als <b>${th}</b>.`,type:"multi",choices:ns.map(fmt),correct:corr,
+  show:ns.filter(n=>Math.abs(n)>th).map(fmt).join("; ")||"keine",sol:`Betrag = Abstand zur Null. Vorsicht bei ${fmt(th)} und ${fmt(-th)}: Betrag ${th} ist nicht größer als ${th}.`};
+});
+def("extrem","t16","Größte und kleinste Zahl (Trainingsblatt S 27 / 3)",()=>{
+ const n=pick([2,3,3,4]),w=["","","zweistellige","dreistellige","vierstellige"][n],big=10**n-1,small=10**(n-1);
+ const dig=n===2?98:n===3?987:9876;
+ const L=[[`die größte ${w} ganze Zahl`,big,"Alle Ziffern 9."],[`die kleinste ${w} ganze Zahl`,-big,`Negativ und vom Betrag so groß wie möglich: ${fmt(-big)}.`],[`die kleinste ${w} natürliche Zahl`,small,`Die kleinste ${w} Zahl ohne Vorzeichen ist ${small}.`],[`die größte negative ${w} ganze Zahl`,-small,`Am nächsten an der Null: ${fmt(-small)}.`],[`die kleinste ${w} ganze Zahl mit lauter verschiedenen Ziffern`,-dig,`Negativ, Ziffern so groß wie möglich und alle verschieden: ${fmt(-dig)}.`],[`die größte ${w} Zahl mit lauter verschiedenen Ziffern`,dig,`Ziffern absteigend: ${dig}.`]];
+ const [q,a,s]=pick(L);
+ return {q:`Wie lautet ${q}?`,type:"in",fields:[{ans:a}],sol:s};
+});
+def("tausch","t16","Ziffern vertauschen (Trainingsblatt S 27 / 3d)",()=>{
+ let h,z,e;do{h=R(1,9);z=R(0,9);e=R(1,9);}while(h===e);const neg=Math.random()<.7;
+ const x=(neg?-1:1)*(100*h+10*z+e),y=(neg?-1:1)*(100*e+10*z+h);
+ const ch=["wird sie größer","wird sie kleiner","bleibt sie gleich"];
+ return {q:`Wenn man bei der Zahl <b>${fmt(x)}</b> die Einerziffer mit der Hunderterziffer vertauscht, dann …`,type:"mc",choices:ch,correct:y>x?0:1,
+  sol:`${fmt(x)} wird zu ${fmt(y)}. ${fmt(y)} liegt weiter ${y>x?"rechts":"links"} auf der Zahlengeraden, ist also ${y>x?"größer":"kleiner"}.`};
+});
+
+// ===== 2.1 =====
+def("kopf","t21","Kopfrechnen plus und minus",()=>{
+ if(Math.random()<.5){const a=R(12,99),b=R(12,260);return {q:`<span class="big">${a} + ${b} = ?</span>`,type:"in",fields:[{ans:a+b}],sol:`${a} + ${b} = ${a+b}`};}
+ const a=R(50,999),b=R(11,Math.min(a-1,400));return {q:`<span class="big">${a} − ${b} = ?</span>`,type:"in",fields:[{ans:a-b}],sol:`${a} − ${b} = ${a-b}. Probe: ${a-b} + ${b} = ${a}`};
+});
+const QUIZ41=[["Bilde die Summe von 15 und 23.",38],["Subtrahiere 43 von 88.",45],["Berechne die Summe aus 38 und 54.",92],["Wie groß ist die Differenz zwischen 76 und 95?",19],["Ziehe 18 von 42 ab.",24],["Addiere 92 und 74.",166],["Berechne 52 plus 65.",117],["Zähle 39 und 79 zusammen.",118],["Subtrahiere 36 von 89.",53],
+ ["Subtrahiere von der Zahl 84 die Zahl 27.",57],["Berechne die Differenz von 92 und 59.",33],["Subtrahiere 13 von der Zahl 285.",272],["Bilde die Differenz der Zahlen 286 und 113.",173],
+ ["Addiere zur Zahl 13 die Zahl 74.",87],["Berechne die Summe von 97 und 59.",156],["Addiere 74 zur Zahl 503.",577],["Bilde die Summe der Zahlen 340 und 150.",490]];
+def("text","t21","Rechnen nach Text (Trainingsblatt S 37, S 38, S 41)",()=>{
+ if(Math.random()<.35){const [q,a]=pick(QUIZ41);return {q,type:"in",fields:[{ans:a}],sol:`Ergebnis: ${a}`};}
+ const a=R(40,600),b=R(10,a-5);
+ const T=[[`Subtrahiere von der Zahl ${a} die Zahl ${b}.`,a-b,`${a} − ${b}`],[`Subtrahiere ${b} von der Zahl ${a}.`,a-b,`${a} − ${b}`],[`Berechne die Differenz von ${a} und ${b}.`,a-b,`${a} − ${b}`],[`Bilde die Differenz der Zahlen ${a} und ${b}.`,a-b,`${a} − ${b}`],[`Ziehe ${b} von ${a} ab.`,a-b,`${a} − ${b}`],[`Wie groß ist die Differenz zwischen ${b} und ${a}?`,a-b,`${a} − ${b}`],
+  [`Addiere zur Zahl ${a} die Zahl ${b}.`,a+b,`${a} + ${b}`],[`Berechne die Summe von ${a} und ${b}.`,a+b,`${a} + ${b}`],[`Zähle ${b} und ${a} zusammen.`,a+b,`${b} + ${a}`],[`Addiere ${b} zur Zahl ${a}.`,a+b,`${a} + ${b}`]];
+ const [q,r,c]=pick(T);
+ return {q,type:"in",fields:[{ans:r}],hint:"Schreib dir zuerst die Rechnung auf.",sol:`Rechnung: ${c} = ${r}. Vorsicht bei „subtrahiere b von a“: die zweite Zahl steht vorne!`};
+});
+const ADD_TB=[[317,402],[2134,3027],[31745,57350],[801467,937563],[25398,36707],[25786,47787],[58808,41312],[132580,373258]];
+const SUB_TB=[[627,413],[342,289],[5745,3957],[9467,7579],[5398,4707],[45776,27787],[58808,41312],[132580,73258]];
+def("schrAdd","t21","Schriftlich addieren",()=>{
+ let a,b;if(Math.random()<.35)[a,b]=pick(ADD_TB);else{const d=R(4,6);a=R(10**(d-1),10**d-1);b=R(10**(d-2),10**d-1);}
+ return {q:"Berechne schriftlich.",fig:colHTML(a,b,"+"),type:"in",fields:[{ans:a+b,wide:true}],sol:`${fmt(a)} + ${fmt(b)} = ${fmt(a+b)}. Von rechts nach links rechnen und den Übertrag klein dazuschreiben.`};
+});
+def("schrSub","t21","Schriftlich subtrahieren",()=>{
+ let a,b;if(Math.random()<.35)[a,b]=pick(SUB_TB);else{const d=R(4,6);a=R(10**(d-1)*2,10**d-1);b=R(10**(d-2),a-1);}
+ return {q:"Berechne schriftlich.",fig:colHTML(a,b,"−"),type:"in",fields:[{ans:a-b,wide:true}],sol:`${fmt(a)} − ${fmt(b)} = ${fmt(a-b)}. Probe: ${fmt(a-b)} + ${fmt(b)} = ${fmt(a)}`};
+});
+function roundSig(n){const p=10**Math.max(0,String(n).length-2);return Math.round(n/p)*p;}
+def("ueber","t21","Überschlag (Trainingsblatt S 37 / 5, S 38 / 5)",()=>{
+ const add=Math.random()<.5;const a=R(40000,480000);const b=add?R(10000,480000):R(10000,a-8000);const c=add?a+b:a-b;
+ const o=new Set();let g=0;while(o.size<3&&g++<200){const f=pick([0.5,0.6,0.7,1.3,1.5,1.8,2,0.4]);const m=Math.round(c*f+R(-999,999));if(m>0&&[...o,c].every(z=>Math.abs(z-m)>Math.max(z,m)*0.12))o.add(m);}
+ const ch=shuffle([c,...o]);const ra=roundSig(Math.max(a,b)),rb=Math.round(Math.min(a,b)/(10**Math.max(0,String(Math.max(a,b)).length-2)))*10**Math.max(0,String(Math.max(a,b)).length-2);
+ const [x,y]=a>=b?[ra,rb]:[rb,ra];
+ return {q:`Überschlage und wähle das richtige Ergebnis, ohne genau zu rechnen:<br><b>${fmt(a)} ${add?"+":"−"} ${fmt(b)}</b>`,type:"mc",choices:ch.map(fmt),correct:ch.indexOf(c),
+  sol:`Überschlag: ${fmt(x)} ${add?"+":"−"} ${fmt(y)} = ${fmt(add?x+y:x-y)}. Am nächsten dran: ${fmt(c)}.`};
+});
+const BEG={add:["1. Summand","2. Summand","Wert der Summe","Summe"],sub:["Minuend","Subtrahend","Wert der Differenz","Differenz"]};
+def("begriff","t21","Fachbegriffe",()=>{
+ const add=Math.random()<.5;const a=R(20,99),b=R(10,a-1),c=add?a+b:a-b;const op=add?"+":"−";const part=R(0,3);
+ const parts=[a,b,c].map(String);let html;
+ if(part<3)html=parts.map((p,i)=>i===part?`<mark>${p}</mark>`:p);else html=[`<mark>${a} ${op} ${b}</mark>`,"",c];
+ const expr=part<3?`${html[0]} ${op} ${html[1]} = ${html[2]}`:`${html[0]} = ${c}`;
+ const right=(add?BEG.add:BEG.sub)[part];const other=add?BEG.sub:BEG.add;
+ const ch=shuffle(uniq([right,...shuffle((add?BEG.add:BEG.sub).filter(x=>x!==right)).slice(0,2),pick(other)]));
+ return {q:`Wie heißt der markierte Teil?<br><span class="big">${expr}</span>`,type:"mc",choices:ch,correct:ch.indexOf(right),
+  sol:add?"1. Summand + 2. Summand = Wert der Summe. „2 + 3“ zusammen heißt Summe.":"Minuend − Subtrahend = Wert der Differenz. „6 − 2“ zusammen heißt Differenz."};
+});
+def("begriffR","t21","Mit Fachbegriffen rechnen",()=>{
+ const a=R(40,500),b=R(10,a-5);const T=[
+  [`Der Minuend ist ${a}, der Subtrahend ist ${b}. Berechne den Wert der Differenz.`,a-b,`${a} − ${b} = ${a-b}`],
+  [`Der 1. Summand ist ${a}, der 2. Summand ist ${b}. Berechne den Wert der Summe.`,a+b,`${a} + ${b} = ${a+b}`],
+  [`Der Wert der Summe ist ${a}, der 1. Summand ist ${b}. Wie heißt der 2. Summand?`,a-b,`${b} + ▢ = ${a}, also ▢ = ${a} − ${b} = ${a-b}`],
+  [`Der Wert der Differenz ist ${b}, der Subtrahend ist ${a}. Wie heißt der Minuend?`,a+b,`▢ − ${a} = ${b}, also ▢ = ${b} + ${a} = ${a+b}`],
+  [`Der Minuend ist ${a}, der Wert der Differenz ist ${b}. Wie heißt der Subtrahend?`,a-b,`${a} − ▢ = ${b}, also ▢ = ${a} − ${b} = ${a-b}`]];
+ const [q,r,s]=pick(T);return {q,type:"in",fields:[{ans:r}],sol:s};
+});
+function eqForm(){const t=R(0,3),a=R(12,900),b=R(11,a-1);
+ if(t===0)return {e:`${b} + ▢ = ${a}`,r:a-b,u:`▢ = ${a} − ${b}`,w:[`▢ = ${a} + ${b}`,`▢ = ${b} − ${a}`]};
+ if(t===1)return {e:`▢ + ${b} = ${a}`,r:a-b,u:`▢ = ${a} − ${b}`,w:[`▢ = ${a} + ${b}`,`▢ = ${b} − ${a}`]};
+ if(t===2)return {e:`▢ − ${b} = ${a}`,r:a+b,u:`▢ = ${a} + ${b}`,w:[`▢ = ${a} − ${b}`,`▢ = ${b} − ${a}`]};
+ return {e:`${a} − ▢ = ${b}`,r:a-b,u:`▢ = ${a} − ${b}`,w:[`▢ = ${a} + ${b}`,`▢ = ${b} − ${a}`]};}
+def("platz","t21","Gleichungen mit Platzhalter",()=>{
+ const f=eqForm();const x=Math.random()<.3;const e=x?f.e.replace("▢","x"):f.e;
+ return {q:`Bestimme den Platzhalter:<br><span class="big">${e}</span>`,type:"in",fields:[{pre:x?"x =":"▢ =",ans:f.r}],hint:"Bilde die Umkehraufgabe.",sol:`Umkehraufgabe: ${f.u} = ${f.r}.`};
+});
+def("platzText","t21","Platzhalter-Textaufgaben (Heft 10.11.)",()=>{
+ const a=R(100,1500),b=R(50,a-10),c=a;const T=[
+  [`Bestimme die Zahl, zu der man ${b} addieren muss, um ${c} zu erhalten.`,c-b,`▢ + ${b} = ${c} → ▢ = ${c} − ${b} = ${c-b}`],
+  [`Welche Zahl muss man zu ${b} addieren, um ${c} zu erhalten?`,c-b,`${b} + ▢ = ${c} → ▢ = ${c} − ${b} = ${c-b}`],
+  [`Von welcher Zahl muss man ${b} subtrahieren, um ${c} zu erhalten?`,c+b,`▢ − ${b} = ${c} → ▢ = ${c} + ${b} = ${c+b}`],
+  [`Welche Zahl muss man von ${c} subtrahieren, um ${b} zu erhalten?`,c-b,`${c} − ▢ = ${b} → ▢ = ${c} − ${b} = ${c-b}`],
+  ["Bestimme die Zahl, zu der man 394 addieren muss, um 1 396 zu erhalten.",1002,"▢ + 394 = 1 396 → ▢ = 1 396 − 394 = 1 002"]];
+ const [q,r,s]=pick(T);return {q,type:"in",fields:[{ans:r}],hint:"Schreib zuerst eine Gleichung mit ▢ auf.",sol:s};
+});
+def("umkehr","t21","Umkehraufgabe finden",()=>{
+ const f=eqForm();const ch=shuffle([f.u,...f.w]);
+ return {q:`Welche Umkehraufgabe passt?<br><span class="big">${f.e}</span>`,type:"mc",choices:ch,correct:ch.indexOf(f.u),sol:`${f.u} = ${f.r}. Die Subtraktion ist die Umkehrung der Addition.`};
+});
+
+// ===== Operatoren =====
+const OPS=[["angeben, nennen","Das Ergebnis hinschreiben, ohne Begründung."],["beurteilen","Ein Urteil fällen und es begründen."],["begründen, zeigen","Mit logischen Schritten bestätigen, warum etwas stimmt. Den Weg aufschreiben."],["berechnen","Die Rechnung mit Ansatz aufschreiben."],["bestimmen, ermitteln","Den Weg frei wählen (rechnen oder zeichnen) und das Vorgehen zeigen."],["zeichnen","Möglichst genau zeichnen."],["skizzieren","Das Wichtige grob zeichnen."],["entscheiden","Sich festlegen, ohne Begründung."]];
+def("op","op","Was verlangt der Operator?",()=>{
+ const i=R(0,OPS.length-1);const others=shuffle(OPS.filter((_,k)=>k!==i)).slice(0,3);
+ if(Math.random()<.5){const ch=shuffle([OPS[i][1],...others.map(o=>o[1])]);return {q:`Was musst du tun, wenn in der Aufgabe <b>„${OPS[i][0]}“</b> steht?`,type:"mc",choices:ch,correct:ch.indexOf(OPS[i][1]),sol:`${OPS[i][0]}: ${OPS[i][1]}`};}
+ const ch=shuffle([OPS[i][0],...others.map(o=>o[0])]);return {q:`Welcher Operator passt? <b>${OPS[i][1]}</b>`,type:"mc",choices:ch,correct:ch.indexOf(OPS[i][0]),sol:`${OPS[i][0]}: ${OPS[i][1]}`};
+});
+
+const SKM={};SK.forEach(s=>SKM[s.id]=s);
+
+// ---------- Merkwissen (Hefteinträge) ----------
+const MERK=[
+ ["t11","Die Reihenfolge der natürlichen Zahlen (1; 2; 3; …) kann man am ___ darstellen.","<b>Zahlenstrahl</b>"],
+ ["t11","Am Zahlenstrahl ist die weiter ___ liegende Zahl die kleinere.","<b>links</b>"],
+ ["t11","Was ist eine Längeneinheit (LE)?","Der <b>Abstand zwischen zwei aufeinanderfolgenden Zahlen</b> am Zahlenstrahl."],
+ ["t11","Um große Zahlen am Zahlenstrahl darzustellen, muss man alle Abstände zwischen den Zahlen entsprechend …","<b>verkleinern</b>"],
+ ["t11","Was ist ein Koordinatensystem (KoSy)?","<b>Zwei Zahlenstrahlen, die miteinander einen rechten Winkel bilden.</b> Zahlenpaare stellt man im KoSy dar."],
+ ["t11","Wie heißen die beiden Achsen im KoSy?","Der Zahlenstrahl nach rechts heißt <b>x-Achse</b>, der nach oben <b>y-Achse</b>."],
+ ["t11","Wie heißt der Punkt, in dem sich beide Achsen schneiden?","<b>(Koordinaten-)Ursprung</b>"],
+ ["t11","Was bedeutet P(3|2)?","Vom Ursprung <b>3 LE nach rechts</b> (x), dann <b>2 LE nach oben</b> (y). Erst x, dann y!"],
+ ["t11","Wie werden Punkte bezeichnet?","Mit <b>Großbuchstaben</b>: A; B; C; …; P; Q; R; …"],
+ ["t12","Was sind die zehn Ziffern?","<b>0; 1; 2; 3; 4; 5; 6; 7; 8; 9</b>. Sie sind die Grundbausteine für beliebig große natürliche Zahlen."],
+ ["t12","Wovon hängt der Wert einer Ziffer ab?","Von ihrer <b>Position</b> in der Zahl. In 543 203 ist die erste 3 = 3 Tausender, die letzte 3 = 3 Einer."],
+ ["t12","Wie nennt man die Zahlen 1; 10; 100; 1 000; 10 000; …?","<b>Stufenzahlen</b>"],
+ ["t12","Wie kann man Stufenzahlen kürzer schreiben?","Mit <b>Zehnerpotenzen</b>: 100 = 10 · 10 = 10² („zehn hoch 2“), 1 000 = 10³, 1 000 000 = 10⁶"],
+ ["t12","Wie heißt die hochgestellte Zahl, und was gibt sie bei Zehnerpotenzen an?","Sie heißt <b>Exponent</b>. Bei Zehnerpotenzen gibt er die <b>Anzahl der Endnullen</b> an."],
+ ["t12","Schreibe mit Zehnerpotenz: 5 000 000 und 302 000","5 000 000 = <b>5 · 10⁶</b> (6 Endnullen)<br>302 000 = <b>302 · 10³</b> (3 Endnullen)"],
+ ["t12","Wie schreibt man Zahlen unter einer Million in Worten? Beispiel 420 007","<b>Klein und zusammen</b>: vierhundertzwanzig<b>tausend</b>sieben"],
+ ["t12","Wie schreibt man Zahlen über einer Million in Worten? Beispiel 14 005 000 310","<b>Getrennt.</b> Million, Milliarde groß, die Zahlen klein und zusammen: vierzehn Milliarden fünf Millionen dreihundertzehn"],
+ ["t12","Wie viele dreistellige Zahlen enden auf 5?","Hunderter: 9 Möglichkeiten, Zehner: 10 Möglichkeiten. <b>9 · 10 = 90</b>"],
+ ["t13","Was ist eine Zahlenmenge? Wie schreibt man sie?","Zahlen mit gemeinsamen Eigenschaften werden zu Zahlenmengen zusammengefasst, z. B. {2; 4; 6; 8; 10; …}. <b>{ }</b> heißt Mengenklammer, jede Zahl darin ist ein <b>Element</b> der Menge."],
+ ["t13","Was ist ℕ, was ist ℕ₀?","ℕ = {1; 2; 3; 4; 5; …} <b>ohne Null</b><br>ℕ₀ = {0; 1; 2; 3; 4; 5; …} <b>mit Null</b>"],
+ ["t13","Teilbarkeitsregeln für 2, 5 und 10","Durch <b>2</b>: Endziffer gerade. Durch <b>5</b>: Endziffer 0 oder 5. Durch <b>10</b>: Endziffer 0."],
+ ["t13","Teilbarkeitsregeln für 4 und 25","Durch <b>4</b>: die letzten beiden Ziffern bilden eine durch 4 teilbare Zahl. Durch <b>25</b>: Endung 00, 25, 50 oder 75."],
+ ["t13","Teilbarkeitsregeln für 3 und 9","Die <b>Quersumme</b> (Summe aller Ziffern) ist durch 3 bzw. durch 9 teilbar."],
+ ["t13","Was ist eine Primzahl? Nenne die Primzahlen bis 30.","Eine Zahl mit <b>genau zwei Teilern</b> (1 und sich selbst). 1 ist keine Primzahl.<br>2; 3; 5; 7; 11; 13; 17; 19; 23; 29"],
+ ["t13","Was ist eine Quadratzahl?","Eine Zahl, die man als <b>n · n</b> schreiben kann: 1; 4; 9; 16; 25; 36; 49; 64; 81; 100; 121; 144; …"],
+ ["t13","Was ist die Teilermenge T₁₂, was die Vielfachenmenge V₆?","T₁₂ = {1; 2; 3; 4; 6; 12} (alle Teiler)<br>V₆ = {6; 12; 18; 24; …} (alle Vielfachen)"],
+ ["t14","Wie rundet man?","Schau auf die Ziffer <b>rechts neben der Rundungsstelle</b>: 0 bis 4 abrunden, 5 bis 9 aufrunden. Zeichen: ≈"],
+ ["t14","Vorsicht beim Runden von Zeit: 12 min 46 s ≈ ?","<b>13 min</b>, denn 1 min hat 60 s. Ab 30 s wird aufgerundet!"],
+ ["t15","Was sind negative Zahlen?","Zahlen unter Null, z. B. −5 °C (5 Grad unter Null). Sie haben ein <b>negatives Vorzeichen</b>."],
+ ["t15","Ist die Null positiv oder negativ?","<b>Weder noch.</b> Die natürlichen Zahlen sind positive Zahlen."],
+ ["t15","Wozu erweitert man den Zahlenstrahl?","Zur <b>Zahlengeraden</b>: links von der Null die negativen, rechts die positiven Zahlen."],
+ ["t15","Was ist ℤ?","Die Menge der <b>ganzen Zahlen</b>: ℤ = {…; −4; −3; −2; −1; 0; 1; 2; 3; 4; …}"],
+ ["t15","Was sind Gegenzahlen?","Zahlen, die sich <b>nur durch ihr Vorzeichen</b> unterscheiden, z. B. −4 und 4; 108 und −108."],
+ ["t16","Welche von zwei Zahlen ist größer?","Die, die auf der Zahlengeraden <b>weiter rechts</b> liegt. Man schreibt a &lt; b oder b &gt; a. Das Krokodil frisst die größere Zahl."],
+ ["t16","Was ist der Betrag einer Zahl?","Der <b>Abstand zur Null</b>. Man schreibt |a|. |5| = 5 und |−5| = 5"],
+ ["t16","Was haben Zahl und Gegenzahl gemeinsam?","Den <b>gleichen Betrag</b>."],
+ ["t21","Wie heißen die Teile bei 2 + 3 = 5?","2: <b>1. Summand</b>, 3: <b>2. Summand</b>, 5: <b>Wert der Summe</b>. „2 + 3“ heißt <b>Summe</b>. Zusammenzählen nennt man <b>addieren</b>."],
+ ["t21","Wie heißen die Teile bei 6 − 2 = 4?","6: <b>Minuend</b>, 2: <b>Subtrahend</b>, 4: <b>Wert der Differenz</b>. „6 − 2“ heißt <b>Differenz</b>. Abziehen nennt man <b>subtrahieren</b>."],
+ ["t21","Merke: Die Subtraktion ist …","… die <b>Umkehrung der Addition</b>. 47 + 23 = 70, Probe: 70 − 23 = 47"],
+ ["t21","Was ist eine Gleichung? Wie bestimmt man den Platzhalter?","Eine Aufgabe mit <b>Platzhalter</b> (▢; x). Den Wert bestimmt man durch die <b>Umkehraufgabe</b>: 15 + ▢ = 31 → ▢ = 31 − 15 = 16"],
+ ["op","Was bedeutet „angeben“?","Ergebnis hinschreiben, <b>keine Begründung</b> nötig."],
+ ["op","Was bedeutet „beurteilen“?","Ein Urteil fällen und es <b>begründen</b>."],
+ ["op","Was bedeutet „begründen“?","Durch logisches Schließen bestätigen. <b>Das Vorgehen aufschreiben.</b>"],
+ ["op","Was bedeutet „berechnen“?","Die Rechnung <b>mit Ansatz</b> aufschreiben."],
+ ["op","Was bedeutet „bestimmen“?","Weg frei wählen (rechnen oder zeichnen), <b>Vorgehen zeigen</b>."],
+ ["op","Was bedeutet „zeichnen“?","<b>Möglichst genau</b> zeichnen (Lineal, Geodreieck)."]
+].map((m,i)=>({id:"m"+i,topic:m[0],f:m[1],b:m[2]}));
+
+if(typeof module!=="undefined")module.exports={SK,SKM,MERK,words,fmt,toInt,intsIn,TOPICS};
+
+// ===================== Oberfläche =====================
+const $=id=>document.getElementById(id);
+let S={sk:{},mk:{},pen:false,topics:TOPICS.map(t=>t.id),done:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)S=Object.assign(S,s);}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const lvl=id=>(S.sk[id]&&S.sk[id].l)||0;
+const mlvl=id=>S.mk[id]||0;
+function bump(rec,ok){return ok?Math.min(5,rec+1):Math.max(0,rec-2);}
+
+function show(n){["home","quiz","summary","list"].forEach(s=>$(s).classList.toggle("hidden",s!==n));window.scrollTo(0,0);}
+
+// ---------- Startseite ----------
+function daysLeft(){const t=new Date(),a=new Date(t.getFullYear(),t.getMonth(),t.getDate()),b=new Date(...SA_DATE);return Math.round((b-a)/864e5);}
+function renderHome(){
+ document.body.classList.toggle("pen",!!S.pen);
+ const d=daysLeft(),cd=$("cd");
+ if(d>1)cd.innerHTML=`<b>Noch ${d} Tage</b> bis zur Schulaufgabe am Montag, 16.11. Lieber jeden Tag ein bisschen üben als alles auf einmal.`;
+ else if(d===1)cd.innerHTML=`<b>Morgen ist die Schulaufgabe!</b> Heute nur noch wiederholen (Merkwissen), nichts Neues mehr lernen.`;
+ else if(d===0)cd.innerHTML=`<b>Heute ist die Schulaufgabe.</b> Viel Erfolg!`;
+ else cd.classList.add("hidden");
+ $("tiles").innerHTML=TOPICS.map(t=>{const sk=SK.filter(s=>s.topic===t.id);const p=sk.reduce((a,s)=>a+lvl(s.id),0)/(sk.length*5);
+  return `<button class="tile" data-v="${t.id}" aria-pressed="${S.topics.includes(t.id)}"><span class="tt">${t.t}</span><span class="tp">${t.p}</span><span class="tb"><i style="width:${Math.round(p*100)}%"></i></span></button>`;}).join("");
+ [...$("penSeg").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.v==="1")===!!S.pen)));
+ renderTimed();
+}
+$("tiles").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;const k=b.dataset.v;
+ S.topics=S.topics.includes(k)?S.topics.filter(x=>x!==k):S.topics.concat(k);save();renderHome();});
+$("allT").addEventListener("click",()=>{S.topics=TOPICS.map(t=>t.id);save();renderHome();});
+$("penSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S.pen=b.dataset.v==="1";save();renderHome();});
+
+// ---------- Buchaufgaben auf Zeit ----------
+let TIMER=null;
+function mmss(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function renderTimed(){
+ $("timed").innerHTML=BOOK_TIMED.map((b,i)=>`<label><input type="checkbox" data-i="${i}" ${S.done[b[0]]?"checked":""}> Buch ${b[0]}</label><span class="tm" id="tm${i}">${mmss(b[1])}</span><button class="mini" data-start="${i}">Start</button>`).join("");
+}
+$("timed").addEventListener("change",e=>{const i=e.target.dataset.i;if(i==null)return;S.done[BOOK_TIMED[i][0]]=e.target.checked;save();});
+$("timed").addEventListener("click",e=>{const b=e.target.closest("[data-start]");if(!b)return;const i=+b.dataset.start;
+ if(TIMER&&TIMER.i===i){clearInterval(TIMER.h);TIMER=null;renderTimed();return;}
+ if(TIMER){clearInterval(TIMER.h);renderTimed();}
+ let left=BOOK_TIMED[i][1];const el=()=>$("tm"+i);
+ TIMER={i,h:setInterval(()=>{left--;const t=el();if(!t)return;
+  if(left<=0){clearInterval(TIMER.h);TIMER=null;t.textContent="Zeit um!";t.classList.add("run");const bb=document.querySelector(`[data-start="${i}"]`);if(bb)bb.textContent="Start";try{navigator.vibrate&&navigator.vibrate(300);}catch(e){}return;}
+  t.textContent=mmss(left);},1000)};
+ renderTimed();el().classList.add("run");document.querySelector(`[data-start="${i}"]`).textContent="Stopp";
+});
+
+// ---------- Runden ----------
+let RD=null;
+function weightedPick(pool,avoid){
+ const w=pool.map(s=>(s.id===avoid?.15:1)*(S.sk[s.id]?6-lvl(s.id):7));
+ let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i];}return pool[pool.length-1];
+}
+function startRound(mode,only){
+ const topics=S.topics.length?S.topics:TOPICS.map(t=>t.id);
+ let q=[];
+ if(mode==="merk"){
+  const pool=MERK.filter(m=>topics.includes(m.topic));
+  q=shuffle(pool).sort((a,b)=>mlvl(a.id)-mlvl(b.id)).slice(0,12).map(m=>({merk:m}));
+  q=shuffle(q);
+ }else if(mode==="probe"){
+  for(const t of TOPICS.filter(t=>t.id!=="op")){const pool=SK.filter(s=>s.topic===t.id);const a=weightedPick(pool),b=weightedPick(pool.filter(s=>s!==a));q.push({sk:a},{sk:b});}
+ }else{
+  const pool=only?[SKM[only]]:SK.filter(s=>topics.includes(s.topic));let last=null;
+  for(let i=0;i<(only?8:12);i++){const s=pool.length>1?weightedPick(pool,last):pool[0];q.push({sk:s});last=s.id;}
+ }
+ RD={mode,only,q,i:0,right:0,wrongSk:new Set(),retried:new Set(),t0:Date.now(),tick:null};
+ if(mode==="probe")RD.tick=setInterval(updCount,1000);
+ show("quiz");nextQ();
+}
+function updCount(){if(!RD)return;let s=`${Math.min(RD.i+1,RD.q.length)} / ${RD.q.length}`;if(RD.mode==="probe")s+=` · ${mmss(Math.floor((Date.now()-RD.t0)/1000))}`;$("count").textContent=s;}
+function nextQ(){
+ if(RD.i>=RD.q.length)return finish();
+ const it=RD.q[RD.i];$("barFill").style.width=(RD.i/RD.q.length*100)+"%";updCount();
+ $("fb").className="feedback hidden";$("nextRow").classList.add("hidden");$("figWrap").innerHTML="";$("hint").textContent="";
+ if(it.merk)return renderMerk(it.merk);
+ const t=it.sk.gen();it.t=t;RD.cur=t;RD.curSk=it.sk;RD.answered=false;
+ const tp=TOPICS.find(x=>x.id===it.sk.topic);
+ $("dirLbl").textContent=`${tp.t.split(" ")[0]} · ${it.sk.name}`;
+ $("prompt").innerHTML=t.q;$("figWrap").innerHTML=t.fig||"";$("hint").textContent=t.hint||"";
+ renderArea(t);
+}
+function renderArea(t){
+ const A=$("area");let h="";
+ if(t.type==="in"){
+  h=`<div class="fields">`;
+  if(t.pairOf)h+=`<span>${t.pairOf}(</span><input class="num s" inputmode="text" autocomplete="off" aria-label="x-Koordinate"><span>|</span><input class="num s" inputmode="text" autocomplete="off" aria-label="y-Koordinate"><span>)</span>`;
+  else h+=t.fields.map(f=>`<label>${f.pre||""}<input class="num${f.s?" s":""}${f.wide&&t.fields.length===1?" wide":""}" inputmode="text" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="${f.pre||"Antwort"}">${f.post||""}</label>`).join("");
+  h+=`</div><div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="dunno">Weiß nicht</button></div>`;
+ }else if(t.type==="set"){
+  h=`<div class="fields"><input class="num wide" inputmode="text" autocomplete="off" placeholder="z. B. 1; 2; 3" aria-label="Menge"></div><div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="dunno">Weiß nicht</button></div>`;
+ }else if(t.type==="mc"){
+  const wide=t.choices.some(c=>String(c).replace(/<[^>]+>/g,"").length>14);
+  h=`<div class="choices${wide?" wide":""}">${t.choices.map((c,i)=>`<button data-i="${i}">${c}</button>`).join("")}</div>`;
+ }else if(t.type==="multi"){
+  h=`<div class="choices">${t.choices.map((c,i)=>`<button data-i="${i}" aria-pressed="false">${c}</button>`).join("")}</div><div class="actions"><button class="btn" id="chk">Prüfen</button></div>`;
+ }else if(t.type==="order"){
+  RD.seq=[];h=`<div class="choices">${t.items.map(l=>`<button data-l="${l}">${l}</button>`).join("")}</div><div class="order-out" id="ordOut">&nbsp;</div><div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="ordReset">Nochmal</button></div>`;
+ }else if(t.type==="place"){
+  RD.placed=null;h=`<p class="hint">Gewählt: <b id="plOut">noch nichts</b></p><div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="dunno">Weiß nicht</button></div>`;
+ }
+ A.innerHTML=h;
+ const first=A.querySelector("input");if(first&&!matchMedia("(pointer:coarse)").matches)first.focus();
+ A.querySelectorAll("input").forEach(inp=>inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check();}}));
+ const chk=$("chk");if(chk)chk.onclick=check;
+ const dn=$("dunno");if(dn)dn.onclick=()=>finishQ(false,null,true);
+ if(t.type==="mc")A.querySelector(".choices").onclick=e=>{const b=e.target.closest("button");if(!b||RD.answered)return;const i=+b.dataset.i;
+  A.querySelectorAll(".choices button").forEach((x,k)=>{if(k===t.correct)x.classList.add("right");else if(k===i)x.classList.add("wrong");x.disabled=true;});
+  finishQ(i===t.correct);};
+ if(t.type==="multi")A.querySelector(".choices").onclick=e=>{const b=e.target.closest("button");if(!b||RD.answered)return;const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",String(on));b.classList.toggle("sel",on);};
+ if(t.type==="order"){A.querySelector(".choices").onclick=e=>{const b=e.target.closest("button");if(!b||RD.answered||RD.seq.includes(b.dataset.l))return;RD.seq.push(b.dataset.l);b.disabled=true;$("ordOut").textContent=RD.seq.join(" < ");};
+  $("ordReset").onclick=()=>{if(RD.answered)return;RD.seq=[];$("ordOut").innerHTML="&nbsp;";A.querySelectorAll(".choices button").forEach(x=>x.disabled=false);};}
+ if(t.type==="place"){const svg=$("figWrap").querySelector("svg");svg.addEventListener("click",e=>{if(RD.answered)return;
+  const m=JSON.parse(svg.dataset.meta);const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());
+  let gx=Math.round((q.x-m.L)/m.c)+m.xmin,gy=m.ymax-Math.round((q.y-m.T)/m.c);gx=Math.max(m.xmin,Math.min(m.xmax,gx));gy=Math.max(m.ymin,Math.min(m.ymax,gy));
+  RD.placed={x:gx,y:gy};svg.querySelector(".placeG").innerHTML=ptSVG(m.L+(gx-m.xmin)*m.c,m.T+(m.ymax-gy)*m.c,t.label,"blue");
+  $("plOut").textContent=`${t.label}(${fmt(gx)}|${fmt(gy)})`;});}
+}
+function check(){
+ if(RD.answered)return;const t=RD.cur,A=$("area");
+ if(t.type==="in"){
+  const inps=[...A.querySelectorAll("input")];if(inps.some(i=>!i.value.trim())){flashHint("Bitte alle Felder ausfüllen.");return;}
+  const v=inps.map(i=>toInt(i.value));if(v.some(isNaN)){flashHint("Bitte nur Zahlen eintippen (Minus ist erlaubt).");return;}
+  let ok,marks,msg=null;
+  if(t.unordered){const rest=t.fields.map(f=>f.ans);marks=v.map(x=>{const k=rest.indexOf(x);if(k>=0){rest.splice(k,1);return true;}return false;});ok=marks.every(Boolean);}
+  else{marks=v.map((x,i)=>acc(t.fields[i].ans).includes(x));ok=marks.every(Boolean);}
+  if(!ok&&t.pairOf&&v[0]===t.fields[1].ans&&v[1]===t.fields[0].ans)msg="x und y sind vertauscht! Erst x (rechts/links), dann y (oben/unten).";
+  inps.forEach((i,k)=>{i.classList.add(marks[k]?"okf":"badf");i.disabled=true;});
+  return finishQ(ok,msg);
+ }
+ if(t.type==="set"){
+  const inp=A.querySelector("input");if(!inp.value.trim()){flashHint("Bitte die Zahlen eintragen.");return;}
+  let got=uniq(intsIn(inp.value)).sort((a,b)=>a-b),want=t.ans.slice().sort((a,b)=>a-b);
+  if(t.vielf&&got[0]===0)got=got.slice(1);
+  let ok=got.length===want.length&&got.every((x,i)=>x===want[i]);
+  if(!ok&&t.vielf&&got.length===4&&got.every((x,i)=>x===want[i])&&inp.value.match(/(^|[^\d])0([^\d]|$)/))ok=true;
+  inp.classList.add(ok?"okf":"badf");inp.disabled=true;
+  let msg=null;if(!ok){const miss=want.filter(x=>!got.includes(x)),extra=got.filter(x=>!want.includes(x));msg=[miss.length?`Es fehlt: ${miss.join("; ")}.`:"",extra.length?`Gehört nicht dazu: ${extra.join("; ")}.`:""].join(" ");}
+  return finishQ(ok,msg);
+ }
+ if(t.type==="multi"){
+  const bs=[...A.querySelectorAll(".choices button")];const sel=bs.map(b=>b.getAttribute("aria-pressed")==="true");
+  bs.forEach((b,i)=>{b.classList.remove("sel");if(t.correct[i])b.classList.add("right");else if(sel[i])b.classList.add("wrong");b.disabled=true;});
+  return finishQ(sel.every((s,i)=>s===t.correct[i]));
+ }
+ if(t.type==="order"){
+  if(RD.seq.length<t.items.length){flashHint("Tippe alle Buchstaben an.");return;}
+  return finishQ(RD.seq.every((l,i)=>l===t.ans[i]));
+ }
+ if(t.type==="place"){
+  if(!RD.placed){flashHint("Tippe zuerst ins Gitter.");return;}
+  const ok=RD.placed.x===t.target.x&&RD.placed.y===t.target.y;
+  let msg=null;if(!ok&&RD.placed.x===t.target.y&&RD.placed.y===t.target.x)msg="x und y sind vertauscht! Erst x (rechts/links), dann y (oben/unten).";
+  if(!ok)showTarget(t);
+  return finishQ(ok,msg);
+ }
+}
+function showTarget(t){const svg=$("figWrap").querySelector("svg");if(!svg)return;const m=JSON.parse(svg.dataset.meta);
+ svg.querySelector(".placeG").insertAdjacentHTML("beforeend",ptSVG(m.L+(t.target.x-m.xmin)*m.c,m.T+(m.ymax-t.target.y)*m.c,t.label+" richtig","ok"));}
+function flashHint(s){const h=$("hint");const old=RD.cur.hint||"";h.textContent=s;h.style.color="var(--bad)";setTimeout(()=>{if(h.textContent===s){h.textContent=old;h.style.color="";}},2200);}
+function ansText(t){
+ if(t.show)return t.show;
+ if(t.type==="in"){if(t.pairOf)return `${t.pairOf}(${fmt(t.fields[0].ans)}|${fmt(t.fields[1].ans)})`;
+  return t.fields.map(f=>`${f.pre?f.pre+" ":""}${acc(f.ans).map(fmt).join(" oder ")}${f.post?" "+f.post:""}`).join(t.fields.every(f=>!f.pre)?"; ":", &nbsp; ");}
+ if(t.type==="mc")return t.choices[t.correct];
+ return "";
+}
+function finishQ(ok,msg,dunno){
+ RD.answered=true;const t=RD.cur,id=RD.curSk.id;
+ if(dunno&&t.type==="place")showTarget(t);
+ if(dunno)$("area").querySelectorAll("input,button").forEach(x=>x.disabled=true);
+ const r=S.sk[id]||{l:0,n:0,c:0};r.n++;if(ok)r.c++;r.l=bump(r.l,ok);S.sk[id]=r;save();
+ if(ok)RD.right++;else{RD.wrongSk.add(id);
+  if(RD.mode!=="probe"&&!RD.retried.has(id)){RD.retried.add(id);RD.q.splice(Math.min(RD.q.length,RD.i+3),0,{sk:RD.curSk});}}
+ const fb=$("fb");fb.className="feedback "+(ok?"ok":"bad");
+ fb.innerHTML=(ok?`<b>${pick(["Richtig!","Super!","Genau!","Stimmt!"])}</b>`:`<b>${dunno?"Kein Problem, so geht’s:":"Leider nicht richtig."}</b><div class="ans">Richtig: ${ansText(t)}</div>`)+(msg?`<div class="sol"><b>${msg}</b></div>`:"")+`<div class="sol">${t.sol}</div>`;
+ $("nextRow").classList.remove("hidden");$("next").focus({preventScroll:true});
+ fb.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+$("next").onclick=()=>{RD.i++;nextQ();};
+
+// ---------- Merkwissen ----------
+function renderMerk(m){
+ RD.cur=null;const tp=TOPICS.find(x=>x.id===m.topic);
+ $("dirLbl").textContent=`Merkwissen · ${tp.t}`;
+ $("prompt").innerHTML=`<div class="mcard">${m.f}</div>`;
+ $("area").innerHTML=`<div class="mback hidden" id="mb">${m.b}</div><div class="actions" id="rv"><button class="btn" id="reveal">Aufdecken</button></div><div class="actions hidden" id="jd"><button class="btn ok" id="knew">Gewusst</button><button class="btn bad" id="didnt">Nicht gewusst</button></div>`;
+ $("reveal").onclick=()=>{$("mb").classList.remove("hidden");$("rv").classList.add("hidden");$("jd").classList.remove("hidden");};
+ const judge=ok=>{S.mk[m.id]=bump(mlvl(m.id),ok);save();if(ok)RD.right++;else{RD.wrongSk.add(m.id);if(!RD.retried.has(m.id)){RD.retried.add(m.id);RD.q.splice(Math.min(RD.q.length,RD.i+4),0,{merk:m});}}RD.i++;nextQ();};
+ $("knew").onclick=()=>judge(true);$("didnt").onclick=()=>judge(false);
+}
+
+// ---------- Ende ----------
+function finish(){
+ if(RD.tick)clearInterval(RD.tick);
+ const n=RD.q.length,secs=Math.floor((Date.now()-RD.t0)/1000);
+ $("score").textContent=`${RD.right} / ${n}`;
+ let txt=RD.right===n?"Alles richtig. Klasse!":RD.right>=n*.75?"Sehr gut, fast alles sitzt.":RD.right>=n*.5?"Gut. Schau dir die Lösungen der falschen Aufgaben nochmal an.":"Übe diese Themen nochmal in Ruhe, dann klappt es.";
+ if(RD.mode==="probe")txt=`Zeit: ${mmss(secs)} min. `+txt;
+ $("scoreTxt").textContent=txt;
+ const names=[...RD.wrongSk].map(id=>{const s=SKM[id];if(s)return `${TOPICS.find(t=>t.id===s.topic).t.split(" ")[0]} · ${s.name}`;const m=MERK.find(x=>x.id===id);return m?`Merkwissen: ${m.f}`:id;});
+ $("hardWrap").classList.toggle("hidden",!names.length);
+ $("hardList").innerHTML=names.map(x=>`<li>${x}</li>`).join("");
+ show("summary");
+}
+$("again").onclick=()=>startRound(RD.mode,RD.only);
+$("toHome").onclick=()=>{renderHome();show("home");};
+$("quit").onclick=()=>{if(RD&&RD.tick)clearInterval(RD.tick);renderHome();show("home");};
+$("goPractice").onclick=()=>startRound("practice");
+$("goMerk").onclick=()=>startRound("merk");
+$("goProbe").onclick=()=>startRound("probe");
+
+// ---------- Übersicht ----------
+function dots(l){return `<span class="dots" aria-label="Stufe ${l} von 5">${[1,2,3,4,5].map(k=>`<i class="${k<=l?"on":""}"></i>`).join("")}</span>`;}
+function renderList(){
+ $("listBody").innerHTML=TOPICS.map(t=>{const sk=SK.filter(s=>s.topic===t.id);const mk=MERK.filter(m=>m.topic===t.id);
+  const mp=mk.length?Math.round(mk.reduce((a,m)=>a+mlvl(m.id),0)/(mk.length*5)*100):0;
+  return `<h3>${t.t}</h3><p class="sub" style="margin:-2px 0 6px">${t.p} · Merkwissen: ${mp} %</p>`+sk.map(s=>`<div class="skrow"><span class="nm">${s.name}</span>${dots(lvl(s.id))}<button class="mini" data-sk="${s.id}">üben</button></div>`).join("");}).join("");
+}
+$("listBody").addEventListener("click",e=>{const b=e.target.closest("[data-sk]");if(b)startRound("practice",b.dataset.sk);});
+$("showList").onclick=()=>{renderList();show("list");};
+$("listBack").onclick=()=>{renderHome();show("home");};
+$("reset").onclick=()=>{if(confirm("Wirklich den ganzen Lernstand löschen?")){S.sk={};S.mk={};S.done={};save();renderList();}};
+
+renderHome();
+</script>
+</body>
+</html>
